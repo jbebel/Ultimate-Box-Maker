@@ -301,18 +301,20 @@ module Panel(Length,Width,Thick,Filet) {
 //                          <- Circle hole ->
 // Cx=Cylinder X position | Cy=Cylinder Y position | Cdia= Cylinder dia | Cheight=Cyl height
 module CylinderHole(OnOff,Cx,Cy,Cdia) {
-    if(OnOff==1)
-    translate([Cx,Cy,-1])
-    cylinder(d=Cdia,10, $fn=50);
+    if(OnOff == 1) {
+        translate([Cx,Cy,-1])
+        cylinder(d=Cdia,10, $fn=50);
+    }
 }
 //                          <- Square hole ->
 // Sx=Square X position | Sy=Square Y position | Sl= Square Length | Sw=Square Width | Filet = Round corner
 module SquareHole(OnOff,Sx,Sy,Sl,Sw,Filet) {
-    if(OnOff==1)
-    minkowski() {
-        translate([Sx+Filet/2,Sy+Filet/2,-1])
-        cube([Sl-Filet,Sw-Filet,10]);
-        cylinder(d=Filet,h=10, $fn=100);
+    if(OnOff == 1) {
+        minkowski() {
+            translate([Sx+Filet/2,Sy+Filet/2,-1])
+            cube([Sl-Filet,Sw-Filet,10]);
+            cylinder(d=Filet,h=10, $fn=100);
+        }
     }
 }
 
@@ -320,15 +322,16 @@ module SquareHole(OnOff,Sx,Sy,Sl,Sw,Filet) {
 
 //                      <- Linear text panel ->
 module LText(OnOff,Tx,Ty,Font,Size,Content) {
-    if(OnOff==1)
-    translate([Tx,Ty,Thick+.5])
-    linear_extrude(height = 0.5) {
-        text(Content, size=Size, font=Font);
+    if(OnOff == 1) {
+        translate([Tx,Ty,Thick+.5])
+        linear_extrude(height = 0.5) {
+            text(Content, size=Size, font=Font);
+        }
     }
 }
 //                     <- Circular text panel->
 module CText(OnOff,Tx,Ty,Font,Size,TxtRadius,Angl,Turn,Content) {
-    if(OnOff==1) {
+    if(OnOff == 1) {
         Angle = -Angl / len(Content);
         translate([Tx,Ty,Thick+.5])
         for (i= [0:len(Content)-1] ) {
@@ -380,37 +383,42 @@ module FPanL() {
 
 /////////////////////////// <- Main part -> /////////////////////////
 
-if(TShell==1)
-// Coque haut - Top Shell
-color( Couleur1,1) {
-    translate([0,Width,Height+0.2]) {
-        rotate([0,180,180]) {
-            Coque();
+if(TShell == 1) {
+    // Coque haut - Top Shell
+    color( Couleur1,1) {
+        translate([0,Width,Height+0.2]) {
+            rotate([0,180,180]) {
+                Coque();
+            }
         }
     }
 }
 
-if(BShell==1)
-// Coque bas - Bottom shell
-color(Couleur1) {
-    Coque();
+if(BShell == 1) {
+    // Coque bas - Bottom shell
+    color(Couleur1) {
+        Coque();
+    }
 }
 
 // Pied support PCB - PCB feet
-if (PCBFeet==1)
-// Feet
-translate([PCBPosX,PCBPosY,0]) {
-    Feet();
+if(PCBFeet == 1) {
+    // Feet
+    translate([PCBPosX,PCBPosY,0]) {
+        Feet();
+    }
 }
 
 // Panneau avant - Front panel  <<<<<< Text and holes only on this one.
 //rotate([0,-90,-90])
-if(FPanL==1)
-translate([Length-(Thick*2+m/2),Thick+m/2,Thick+m/2])
-FPanL();
+if(FPanL == 1) {
+    translate([Length-(Thick*2+m/2),Thick+m/2,Thick+m/2])
+    FPanL();
+}
 
 //Panneau arrière - Back panel
-if(BPanL==1)
-color(Couleur2)
-translate([Thick+m/2,Thick+m/2,Thick+m/2])
-Panel(Length,Width,Thick,Filet);
+if(BPanL == 1) {
+    color(Couleur2)
+    translate([Thick+m/2,Thick+m/2,Thick+m/2])
+    Panel(Length,Width,Thick,Filet);
+}
