@@ -100,12 +100,11 @@ Dec_size = Vent ? Thick*2 : 0.8;
 /////////// - Boitier générique bord arrondis - Generic rounded box - //////////
 
 module RoundBox($a=Length, $b=Width, $c=Height) { // Cube bords arrondis
-    $fn = Resolution;
     translate([0, Filet, Filet]) {
         minkowski() {
-            cube([$a - Length/2, $b - 2*Filet, $c - 2*Filet], center=false);
+            cube([$a - Length/2, $b - 2*Filet, $c - 2*Filet]);
             rotate([0, 90, 0]) {
-                cylinder(r=Filet, h=(Length/2), center=false);
+                cylinder(Length/2, r=Filet, $fn=Resolution);
             }
         }
     }
@@ -138,7 +137,7 @@ module Coque() { //Coque - Shell
                             } //Fin largeur Rails
                         } //Fin union
                         translate([ -Thick, -Thick, Height/2]) { // Cube à soustraire
-                            cube([Length + 100, Width + 100, Height], center=false);
+                            cube([Length + 100, Width + 100, Height]);
                         }
                     } //fin soustraction cube median - End Median cube slicer
                     translate([-Thick/2, Thick, Thick]) { // Forme de soustraction centrale
@@ -150,14 +149,12 @@ module Coque() { //Coque - Shell
                     union() {
                         translate([3*Thick + 5, Thick, Height/2]) {
                             rotate([90, 0, 0]) {
-                                $fn = 6;
-                                cylinder(d=16, Thick/2);
+                                cylinder(Thick/2, d=16, $fn=6);
                             }
                         }
                         translate([Length - (3*Thick + 5), Thick, Height/2]) {
                             rotate([90, 0, 0]) {
-                                $fn = 6;
-                                cylinder(d=16, Thick/2);
+                                cylinder(Thick/2, d=16, $fn=6);
                             }
                         }
                     }
@@ -199,22 +196,22 @@ module Coque() { //Coque - Shell
             $fn = 50;
             translate([3*Thick + 5, 20, Height/2 + 4]) {
                 rotate([90, 0, 0]) {
-                    cylinder(d=2, 20);
+                    cylinder(20, d=2);
                 }
             }
             translate([Length - (3*Thick + 5), 20, Height/2 + 4]) {
                 rotate([90, 0, 0]) {
-                    cylinder(d=2, 20);
+                    cylinder(20, d=2);
                 }
             }
             translate([3*Thick + 5, Width + 5, Height/2 - 4]) {
-                rotate([90,0,0]) {
-                    cylinder(d=2, 20);
+                rotate([90, 0, 0]) {
+                    cylinder(20, d=2);
                 }
             }
             translate([Length - (3*Thick + 5), Width + 5, Height/2 - 4]) {
                 rotate([90, 0, 0]) {
-                    cylinder(d=2, 20);
+                    cylinder(20, d=2);
                 }
             }
         } //fin de sides holes
@@ -232,28 +229,28 @@ module Coque() { //Coque - Shell
 module foot(FootDia, FootHole, FootHeight) {
     Filet = 2;
     color(Couleur1)
-    translate([0, 0, Filet - 1.5])
-    difference() {
-
+    translate([0, 0, Filet - 1.5]) {
         difference() {
-            cylinder(d=(FootDia + Filet), FootHeight - Thick, $fn=100);
-            rotate_extrude($fn = 100) {
-                translate([(FootDia + Filet*2) / 2, Filet, 0]) {
-                     minkowski() {
-                         square(10);
-                         circle(Filet, $fn=100);
+            difference() {
+                cylinder(FootHeight - Thick, d=(FootDia + Filet), $fn=100);
+                rotate_extrude($fn=100) {
+                    translate([(FootDia + Filet*2) / 2, Filet, 0]) {
+                         minkowski() {
+                             square(10);
+                             circle(Filet, $fn=100);
+                         }
                      }
                  }
              }
+             cylinder(FootHeight + 1, d=FootHole, $fn=100);
          }
-         cylinder(d=FootHole, FootHeight + 1, $fn=100);
      }
 } // Fin module foot
 
 module Feet() {
 //////////////////// - PCB only visible in the preview mode - /////////////////////
     translate([(3*Thick + 2), Thick + 5, (FootHeight + Thick/2 - 0.5)]) {
-        %squar ([PCBLength + 10, PCBWidth + 10]);
+        %square([PCBLength + 10, PCBWidth + 10]);
         translate([PCBLength/2, PCBWidth/2, 0.5]) {
             color("Olive")
             %text("PCB", halign="center", valign="center", font="Arial black");
@@ -289,9 +286,11 @@ module Panel(Length, Width, Thick, Filet) {
     scale([0.5, 1, 1])
     minkowski() {
         cube([Thick, Width - (Thick*2 + Filet*2 + m), Height - (Thick*2 + Filet*2 + m)]);
-        translate([0, Filet, Filet])
-        rotate([0, 90, 0])
-        cylinder(r=Filet, h=Thick, $fn=100);
+        translate([0, Filet, Filet]) {
+            rotate([0, 90, 0]) {
+                cylinder(Thick, r=Filet, $fn=100);
+            }
+        }
     }
 }
 
@@ -301,8 +300,9 @@ module Panel(Length, Width, Thick, Filet) {
 // Cx=Cylinder X position | Cy=Cylinder Y position | Cdia= Cylinder dia | Cheight=Cyl height
 module CylinderHole(OnOff, Cx, Cy, Cdia) {
     if (OnOff == 1) {
-        translate([Cx, Cy, -1])
-        cylinder(d=Cdia, 10, $fn=50);
+        translate([Cx, Cy, -1]) {
+            cylinder(10, d=Cdia, $fn=50);
+        }
     }
 }
 //                          <- Square hole ->
@@ -310,9 +310,10 @@ module CylinderHole(OnOff, Cx, Cy, Cdia) {
 module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
     if (OnOff == 1) {
         minkowski() {
-            translate([Sx + Filet/2, Sy + Filet/2, -1])
-            cube([Sl - Filet, Sw - Filet, 10]);
-            cylinder(d=Filet, h=10, $fn=100);
+            translate([Sx + Filet/2, Sy + Filet/2, -1]) {
+                cube([Sl - Filet, Sw - Filet, 10]);
+            }
+            cylinder(10, d=Filet, $fn=100);
         }
     }
 }
@@ -322,9 +323,10 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
 //                      <- Linear text panel ->
 module LText(OnOff,Tx,Ty,Font,Size,Content) {
     if (OnOff == 1) {
-        translate([Tx, Ty, Thick + .5])
-        linear_extrude(height=0.5) {
-            text(Content, size=Size, font=Font);
+        translate([Tx, Ty, Thick + .5]) {
+            linear_extrude(height=0.5) {
+                text(Content, size=Size, font=Font);
+            }
         }
     }
 }
@@ -332,12 +334,14 @@ module LText(OnOff,Tx,Ty,Font,Size,Content) {
 module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
     if (OnOff == 1) {
         Angle = -Angl / len(Content);
-        translate([Tx, Ty, Thick + .5])
-        for (i= [0 : len(Content) - 1] ) {
-            rotate([0, 0, i*Angle + 90 + Turn])
-            translate([0, TxtRadius, 0]) {
-                linear_extrude(height=0.5) {
-                    text(Content[i], font=Font, size=Size,  valign="baseline", halign="center");
+        translate([Tx, Ty, Thick + .5]) {
+            for (i= [0 : len(Content) - 1] ) {
+                rotate([0, 0, i*Angle + 90 + Turn]) {
+                    translate([0, TxtRadius, 0]) {
+                        linear_extrude(height=0.5) {
+                            text(Content[i], font=Font, size=Size,  valign="baseline", halign="center");
+                        }
+                    }
                 }
             }
         }
@@ -367,14 +371,15 @@ module FPanL() {
 }
 
     color(Couleur1) {
-        translate ([-.5, 0, 0])
-        rotate([90, 0, 90]) {
-//                      <- Adding text from here ->
-            LText(1, 20, 83, "Arial Black", 4, "Digital Screen"); //(On/Off, Xpos, Ypos, "Font", Size, "Text")
-            LText(1, 120, 83, "Arial Black", 4, "Level");
-            LText(1, 20, 11, "Arial Black", 6, "  1     2      3");
-            CText(1, 93, 29, "Arial Black", 4, 10, 180, 0, "1 . 2 . 3 . 4 . 5 . 6"); //(On/Off, Xpos, Ypos, "Font", Size, Diameter, Arc(Deg), Starting Angle(Deg),"Text")
+        translate ([-.5, 0, 0]) {
+            rotate([90, 0, 90]) {
+    //                      <- Adding text from here ->
+                LText(1, 20, 83, "Arial Black", 4, "Digital Screen"); //(On/Off, Xpos, Ypos, "Font", Size, "Text")
+                LText(1, 120, 83, "Arial Black", 4, "Level");
+                LText(1, 20, 11, "Arial Black", 6, "  1     2      3");
+                CText(1, 93, 29, "Arial Black", 4, 10, 180, 0, "1 . 2 . 3 . 4 . 5 . 6"); //(On/Off, Xpos, Ypos, "Font", Size, Diameter, Arc(Deg), Starting Angle(Deg),"Text")
 //                            <- To here ->
+            }
         }
     }
 }
@@ -409,15 +414,16 @@ if (PCBFeet == 1) {
 }
 
 // Panneau avant - Front panel  <<<<<< Text and holes only on this one.
-//rotate([0,-90,-90])
 if (FPanL == 1) {
-    translate([Length - (Thick*2 + m/2), Thick + m/2, Thick + m/2])
-    FPanL();
+    translate([Length - (Thick*2 + m/2), Thick + m/2, Thick + m/2]) {
+        FPanL();
+    }
 }
 
 //Panneau arrière - Back panel
 if (BPanL == 1) {
     color(Couleur2)
-    translate([Thick + m/2, Thick + m/2, Thick + m/2])
-    Panel(Length, Width, Thick, Filet);
+    translate([Thick + m/2, Thick + m/2, Thick + m/2]) {
+        Panel(Length, Width, Thick, Filet);
+    }
 }
