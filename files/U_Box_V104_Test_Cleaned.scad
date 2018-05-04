@@ -26,6 +26,7 @@
 
 ////////// - Paramètres de la boite - Box parameters - /////////////
 
+
 /* [Box dimensions] */
 // - Longueur - Length
 Length = 160;
@@ -35,6 +36,7 @@ Width = 170;
 Height = 100;
 // - Epaisseur - Wall thickness
 Thick = 2; //[2:5]
+
 
 /* [Box options] */
 // - Diamètre Coin arrondi - Filet diameter
@@ -51,10 +53,8 @@ Vent = 1; // [0:No, 1:Yes]
 Vent_width = 1.5;
 
 
-
 /* [PCB_Feet] */
 //All dimensions are from the center foot axis
-
 // - Coin bas gauche - Low left corner X position
 PCBPosX = 7;
 // - Coin bas gauche - Low left corner Y position
@@ -82,7 +82,6 @@ FPanL = 1; // [0:No, 1:Yes]
 BPanL = 1; // [0:No, 1:Yes]
 
 
-
 /* [Hidden] */
 // - Couleur coque - Shell color
 Couleur1 = "Orange";
@@ -94,11 +93,7 @@ Dec_Thick = Vent ? Thick*2 : Thick;
 Dec_size = Vent ? Thick*2 : 0.8;
 
 
-
-
-
 /////////// - Boitier générique bord arrondis - Generic rounded box - //////////
-
 module RoundBox($a=Length, $b=Width, $c=Height) { // Cube bords arrondis
     translate([0, Filet, Filet]) {
         minkowski() {
@@ -112,7 +107,6 @@ module RoundBox($a=Length, $b=Width, $c=Height) { // Cube bords arrondis
 
 
 ////////////////////////////////// - Module Coque/Shell - //////////////////////////////////
-
 module Coque() { //Coque - Shell
     Thick = Thick*2;
     difference() {
@@ -130,8 +124,9 @@ module Coque() { //Coque - Shell
                             difference() { //largeur Rails
                                 translate([Thick + m, Thick/2, Thick/2]) { // Rails
                                      RoundBox($a=(Length - (2*Thick + 2*m)), $b=(Width - Thick), $c=(Height - Thick*2));
-                                }//fin Rails
-                                translate([((Thick + m/2) * 1.55), Thick/2, Thick/2 + 0.1]) { // +0.1 added to avoid the artefact
+                                } //fin Rails
+                                // +0.1 added to avoid the artefact
+                                translate([((Thick + m/2) * 1.55), Thick/2, Thick/2 + 0.1]) {
                                      RoundBox($a=(Length - ((Thick*3) + 2*m)), $b=(Width - Thick), $c=(Height - Thick));
                                 }
                             } //Fin largeur Rails
@@ -172,7 +167,6 @@ module Coque() { //Coque - Shell
             union() { // outbox sides decorations
 
                 for(i=[0 : Thick : Length/4]) {
-
                     // Ventilation holes part code submitted by Ettie - Thanks ;)
                     translate([10 + i, -Dec_Thick + Dec_size, 1]) {
                         cube([Vent_width, Dec_Thick, Height/4]);
@@ -186,10 +180,9 @@ module Coque() { //Coque - Shell
                     translate([10 + i, Width - Dec_size, 1]) {
                         cube([Vent_width, Dec_Thick, Height/4]);
                     }
-
-
                 } // fin de for
             } //fin union decoration
+
         } //fin difference decoration
 
         union() { //sides holes
@@ -219,44 +212,41 @@ module Coque() { //Coque - Shell
     } //fin de difference holes
 } // fin coque
 
-////////////////////////////// - Experiment - ///////////////////////////////////////////
-
-
-
-
 
 /////////////////////// - Foot with base filet - /////////////////////////////
 module foot(FootDia, FootHole, FootHeight) {
     Filet = 2;
-    color(Couleur1)
-    translate([0, 0, Filet - 1.5]) {
-        difference() {
+    color(Couleur1) {
+        translate([0, 0, Filet - 1.5]) {
             difference() {
-                cylinder(FootHeight - Thick, d=(FootDia + Filet), $fn=100);
-                rotate_extrude($fn=100) {
-                    translate([(FootDia + Filet*2) / 2, Filet, 0]) {
-                         minkowski() {
-                             square(10);
-                             circle(Filet, $fn=100);
+                difference() {
+                    cylinder(FootHeight - Thick, d=(FootDia + Filet), $fn=100);
+                    rotate_extrude($fn=100) {
+                        translate([(FootDia + Filet*2) / 2, Filet, 0]) {
+                             minkowski() {
+                                 square(10);
+                                 circle(Filet, $fn=100);
+                             }
                          }
                      }
                  }
+                 cylinder(FootHeight + 1, d=FootHole, $fn=100);
              }
-             cylinder(FootHeight + 1, d=FootHole, $fn=100);
          }
-     }
+    }
 } // Fin module foot
+
 
 module Feet() {
 //////////////////// - PCB only visible in the preview mode - /////////////////////
     translate([(3*Thick + 2), Thick + 5, (FootHeight + Thick/2 - 0.5)]) {
         %square([PCBLength + 10, PCBWidth + 10]);
         translate([PCBLength/2, PCBWidth/2, 0.5]) {
-            color("Olive")
-            %text("PCB", halign="center", valign="center", font="Arial black");
+            color("Olive") {
+                %text("PCB", halign="center", valign="center", font="Arial black");
+            }
         }
     } // Fin PCB
-
 
 ////////////////////////////// - 4 Feet - //////////////////////////////////////////
     translate([3*Thick + 7, Thick + 10, Thick/2]) {
@@ -275,11 +265,10 @@ module Feet() {
 } // Fin du module Feet
 
 
-
-
- ////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 ////////////////////// <- Holes Panel Manager -> ///////////////////////
 ////////////////////////////////////////////////////////////////////////
+
 
 //                           <- Panel ->
 module Panel(Length, Width, Thick, Filet) {
@@ -295,7 +284,6 @@ module Panel(Length, Width, Thick, Filet) {
 }
 
 
-
 //                          <- Circle hole ->
 // Cx=Cylinder X position | Cy=Cylinder Y position | Cdia= Cylinder dia | Cheight=Cyl height
 module CylinderHole(OnOff, Cx, Cy, Cdia) {
@@ -305,6 +293,8 @@ module CylinderHole(OnOff, Cx, Cy, Cdia) {
         }
     }
 }
+
+
 //                          <- Square hole ->
 // Sx=Square X position | Sy=Square Y position | Sl= Square Length | Sw=Square Width | Filet = Round corner
 module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
@@ -319,7 +309,6 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
 }
 
 
-
 //                      <- Linear text panel ->
 module LText(OnOff,Tx,Ty,Font,Size,Content) {
     if (OnOff == 1) {
@@ -330,6 +319,8 @@ module LText(OnOff,Tx,Ty,Font,Size,Content) {
         }
     }
 }
+
+
 //                     <- Circular text panel->
 module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
     if (OnOff == 1) {
@@ -347,37 +338,43 @@ module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
         }
     }
 }
+
+
 ////////////////////// <- New module Panel -> //////////////////////
 module FPanL() {
     difference() {
-        color(Couleur2)
-        Panel(Length, Width, Thick, Filet);
-
+        color(Couleur2) {
+            Panel(Length, Width, Thick, Filet);
+        }
         rotate([90, 0, 90]) {
             color(Couleur2) {
 //                     <- Cutting shapes from here ->
-            SquareHole(1, 20, 20, 15, 10, 1); //(On/Off, Xpos,Ypos,Length,Width,Filet)
-            SquareHole(1, 40, 20, 15, 10, 1);
-            SquareHole(1, 60, 20, 15, 10, 1);
-            CylinderHole(1, 27, 40, 8);       //(On/Off, Xpos, Ypos, Diameter)
-            CylinderHole(1, 47, 40, 8);
-            CylinderHole(1, 67, 40, 8);
-            SquareHole(1, 20, 50, 80, 30, 3);
-            CylinderHole(1, 93, 30, 10);
-            SquareHole(1, 120, 20, 30, 60, 3);
+                //(On/Off, Xpos,Ypos,Length,Width,Filet)
+                SquareHole(1, 20, 20, 15, 10, 1);
+                SquareHole(1, 40, 20, 15, 10, 1);
+                SquareHole(1, 60, 20, 15, 10, 1);
+                //(On/Off, Xpos, Ypos, Diameter)
+                CylinderHole(1, 27, 40, 8);
+                CylinderHole(1, 47, 40, 8);
+                CylinderHole(1, 67, 40, 8);
+                SquareHole(1, 20, 50, 80, 30, 3);
+                CylinderHole(1, 93, 30, 10);
+                SquareHole(1, 120, 20, 30, 60, 3);
 //                            <- To here ->
+            }
         }
     }
-}
 
     color(Couleur1) {
         translate ([-.5, 0, 0]) {
             rotate([90, 0, 90]) {
-    //                      <- Adding text from here ->
-                LText(1, 20, 83, "Arial Black", 4, "Digital Screen"); //(On/Off, Xpos, Ypos, "Font", Size, "Text")
+//                            <- Adding text from here ->
+                //(On/Off, Xpos, Ypos, "Font", Size, "Text")
+                LText(1, 20, 83, "Arial Black", 4, "Digital Screen");
                 LText(1, 120, 83, "Arial Black", 4, "Level");
                 LText(1, 20, 11, "Arial Black", 6, "  1     2      3");
-                CText(1, 93, 29, "Arial Black", 4, 10, 180, 0, "1 . 2 . 3 . 4 . 5 . 6"); //(On/Off, Xpos, Ypos, "Font", Size, Diameter, Arc(Deg), Starting Angle(Deg),"Text")
+                //(On/Off, Xpos, Ypos, "Font", Size, Diameter, Arc(Deg), Starting Angle(Deg),"Text")
+                CText(1, 93, 29, "Arial Black", 4, 10, 180, 0, "1 . 2 . 3 . 4 . 5 . 6");
 //                            <- To here ->
             }
         }
@@ -422,8 +419,9 @@ if (FPanL == 1) {
 
 //Panneau arrière - Back panel
 if (BPanL == 1) {
-    color(Couleur2)
-    translate([Thick + m/2, Thick + m/2, Thick + m/2]) {
-        Panel(Length, Width, Thick, Filet);
+    color(Couleur2) {
+        translate([Thick + m/2, Thick + m/2, Thick + m/2]) {
+            Panel(Length, Width, Thick, Filet);
+        }
     }
 }
