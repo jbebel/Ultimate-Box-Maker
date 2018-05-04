@@ -1,4 +1,3 @@
-
 /*//////////////////////////////////////////////////////////////////
               -    FB Aka Heartman/Hearty 2016     -
               -   http://heartygfx.blogspot.com    -
@@ -93,7 +92,16 @@ Dec_Thick = Vent ? Thick*2 : Thick;
 Dec_size = Vent ? Thick*2 : 0.8;
 
 
-/////////// - Boitier générique bord arrondis - Generic rounded box - //////////
+/* Generic rounded box
+
+    Produces a box of the specified dimensions. Corners are rounded according to
+    Filet and Resolution parameters.
+    
+    Arguments:
+    a: The length of the box. Defaults to "Length" parameter.
+    b: The width of the box. Defaults to the "Width" parameter.
+    c: The height of the box. Defaults to the "Height" parameter.   
+*/
 module RoundBox($a=Length, $b=Width, $c=Height) { // Cube bords arrondis
     translate([0, Filet, Filet]) {
         minkowski() {
@@ -106,7 +114,12 @@ module RoundBox($a=Length, $b=Width, $c=Height) { // Cube bords arrondis
 } // End of RoundBox Module
 
 
-////////////////////////////////// - Module Coque/Shell - //////////////////////////////////
+/*  Coque: Shell module
+
+    This module takes no arguments, but produces a box shell. This is half the box,
+    including slots for end panels, rounded corners according to Filet and Resolution,
+    wall fixation legs and holes, and vents/decorations according to parameters.
+*/
 module Coque() { //Coque - Shell
     Thick = Thick*2;
     difference() {
@@ -138,7 +151,7 @@ module Coque() { //Coque - Shell
                     translate([-Thick/2, Thick, Thick]) { // Forme de soustraction centrale
                         RoundBox($a=(Length + Thick), $b=(Width - Thick*2), $c=(Height - Thick));
                     }
-                }
+                } // End difference for main box
 
                 difference() { // wall fixation box legs
                     union() {
@@ -162,11 +175,11 @@ module Coque() { //Coque - Shell
                         cube([Length, Thick*2, 10]);
                     }
                 } //Fin fixation box legs
-            }
+            } // End union for box and legs
 
             union() { // outbox sides decorations
 
-                for(i=[0 : Thick : Length/4]) {
+                for (i=[0 : Thick : Length/4]) {
                     // Ventilation holes part code submitted by Ettie - Thanks ;)
                     translate([10 + i, -Dec_Thick + Dec_size, 1]) {
                         cube([Vent_width, Dec_Thick, Height/4]);
@@ -213,7 +226,15 @@ module Coque() { //Coque - Shell
 } // fin coque
 
 
-/////////////////////// - Foot with base filet - /////////////////////////////
+/*  foot module
+
+    Produces a single foot for PCB mounting.
+
+    Arguments:
+    FootDia: Diameter of the foot
+    FootHole: Diameter of the screw hole in the foot
+    FootHeight: Height of the foot above the box interior
+*/
 module foot(FootDia, FootHole, FootHeight) {
     Filet = 2;
     color(Couleur1) {
@@ -237,6 +258,14 @@ module foot(FootDia, FootHole, FootHeight) {
 } // Fin module foot
 
 
+/*  Feet module
+
+    Combines four feet to form mounting platform for PCB.
+    A model of the PCB is included with the background modifier. It is translucent
+    but visible in the preview, but not in the final render.
+
+    No arguments are used, but parameters provide the PCB and foot dimensions.
+*/
 module Feet() {
 //////////////////// - PCB only visible in the preview mode - /////////////////////
     translate([(3*Thick + 2), Thick + 5, (FootHeight + Thick/2 - 0.5)]) {
@@ -270,7 +299,16 @@ module Feet() {
 ////////////////////////////////////////////////////////////////////////
 
 
-//                           <- Panel ->
+/*  Panel module
+
+    Produces a single panel with potentially rounded corners.
+
+    Arguments:
+    Length: The length of the panel
+    Width: The width of the panel
+    Thick: The thickness of the panel
+    Filet: The radius of the rounded corners
+*/
 module Panel(Length, Width, Thick, Filet) {
     scale([0.5, 1, 1])
     minkowski() {
@@ -284,8 +322,16 @@ module Panel(Length, Width, Thick, Filet) {
 }
 
 
-//                          <- Circle hole ->
-// Cx=Cylinder X position | Cy=Cylinder Y position | Cdia= Cylinder dia | Cheight=Cyl height
+/*  Cylinder Hole module
+
+    Produces a cylinder for use as a holein a panel
+
+    Arguments:
+    OnOff: Rendered only if 1
+    Cx: X position of hole center
+    Cy: Y position of hole center
+    Cdia: diameter of hole
+*/
 module CylinderHole(OnOff, Cx, Cy, Cdia) {
     if (OnOff == 1) {
         translate([Cx, Cy, -1]) {
@@ -295,8 +341,18 @@ module CylinderHole(OnOff, Cx, Cy, Cdia) {
 }
 
 
-//                          <- Square hole ->
-// Sx=Square X position | Sy=Square Y position | Sl= Square Length | Sw=Square Width | Filet = Round corner
+/*  Square Hole module
+
+    Produces a rectangular prism with potentially rounded corner for use as a hole in a panel
+
+    Arguments:
+    OnOff: Rendered only if 1
+    Sx: X position of bottom left corner
+    Sy: Y position of bottom left corner
+    Sl: width of rectangle
+    Sw: height of rectangle
+    Filet: radius of rounded corner
+*/
 module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
     if (OnOff == 1) {
         minkowski() {
@@ -309,7 +365,18 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
 }
 
 
-//                      <- Linear text panel ->
+/*  LText module
+
+    Produces linear text for use on a panel
+
+    Arguments:
+    OnOff: Rendered only if 1
+    Tx: X position of bottom left corner of text
+    Ty: Y position of bottom left corner of text
+    Font: Font to use for text
+    Size: Approximate Height of text in mm.
+    Content: The text
+*/
 module LText(OnOff,Tx,Ty,Font,Size,Content) {
     if (OnOff == 1) {
         translate([Tx, Ty, Thick + .5]) {
@@ -321,7 +388,20 @@ module LText(OnOff,Tx,Ty,Font,Size,Content) {
 }
 
 
-//                     <- Circular text panel->
+/*  CText module
+
+    Produces circular text for a panel
+
+    OnOff:Rendered only if 1
+    Tx: X position of text
+    Ty: Y position of text
+    Font: Font to use for text
+    Size: Approximate height of text in mm
+    TxtRadius: Radius of text
+    Angl: Arc angle
+    Turn: Starting angle
+    Content: The text
+*/
 module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
     if (OnOff == 1) {
         Angle = -Angl / len(Content);
@@ -341,6 +421,11 @@ module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
 
 
 ////////////////////// <- New module Panel -> //////////////////////
+/*  FPanL module
+
+    Produces the front panel. No arguments are used, but this module must be
+    edited to produce holes and text for your box.
+*/
 module FPanL() {
     difference() {
         color(Couleur2) {
@@ -379,7 +464,7 @@ module FPanL() {
             }
         }
     }
-}
+} // End FPanL
 
 
 /////////////////////////// <- Main part -> /////////////////////////
