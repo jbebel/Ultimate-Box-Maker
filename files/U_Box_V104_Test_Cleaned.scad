@@ -92,6 +92,11 @@ Dec_Thick = Vent ? Thick*2 : Thick;
 Dec_size = Vent ? Thick*2 : 0.8;
 
 
+// Calculate panel dimensions from box dimensions.
+PanelWidth = Width - (Thick*2) - m;
+PanelHeight = Height - (Thick*2) - m;
+
+
 /* Generic rounded box
 
     Produces a box of the specified dimensions. Corners are rounded according to
@@ -301,17 +306,12 @@ module Feet() {
 
 /*  Panel module
 
-    Produces a single panel with potentially rounded corners.
-
-    Arguments:
-    Length: The length of the panel
-    Width: The width of the panel
-    Thick: The thickness of the panel
-    Filet: The radius of the rounded corners
+    Produces a single panel with potentially rounded corners. Takes no arguments
+    but uses the global parameters.
 */
-module Panel(Length, Width, Thick, Filet) {
+module Panel() {
     minkowski() {
-        cube([Thick/2, Width - (Thick*2 + Filet*2 + m), Height - (Thick*2 + Filet*2 + m)]);
+        cube([Thick/2, PanelWidth - Filet*2, PanelHeight - Filet*2]);
         translate([0, Filet, Filet]) {
             rotate([0, 90, 0]) {
                 cylinder(Thick/2, r=Filet, $fn=100);
@@ -429,7 +429,7 @@ module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
 module FPanL() {
     difference() {
         color(Couleur2) {
-            Panel(Length, Width, Thick, Filet);
+            Panel();
         }
         rotate([90, 0, 90]) {
             color(Couleur2) {
@@ -467,6 +467,42 @@ module FPanL() {
 } // End FPanL
 
 
+////////////////////// <- New module Panel -> //////////////////////
+/*  BPanL module
+
+    Produces the back panel. No arguments are used, but this module must be
+    edited to produce holes and text for your box.
+*/
+module BPanL() {
+    translate([Thick, PanelWidth, 0]) {
+        rotate([0, 0, 180]) {
+            difference() {
+                color(Couleur2) {
+                    Panel();
+                }
+                rotate([90, 0, 90]) {
+                    color(Couleur2) {
+        //                     <- Cutting shapes from here ->
+
+        //                            <- To here ->
+                    }
+                }
+            }
+
+            color(Couleur1) {
+                translate ([-.5, 0, 0]) {
+                    rotate([90, 0, 90]) {
+        //                            <- Adding text from here ->
+
+        //                            <- To here ->
+                    }
+                }
+            }
+        } // End 180 degree rotate
+    }
+} // End BPanL
+
+
 /////////////////////////// <- Main part -> /////////////////////////
 
 if (TShell == 1) {
@@ -495,7 +531,7 @@ if (PCBFeet == 1) {
     }
 }
 
-// Panneau avant - Front panel  <<<<<< Text and holes only on this one.
+// Panneau avant - Front panel
 if (FPanL == 1) {
     translate([Length - (Thick*2 + m/2), Thick + m/2, Thick + m/2]) {
         FPanL();
@@ -504,9 +540,7 @@ if (FPanL == 1) {
 
 //Panneau arrière - Back panel
 if (BPanL == 1) {
-    color(Couleur2) {
-        translate([Thick + m/2, Thick + m/2, Thick + m/2]) {
-            Panel(Length, Width, Thick, Filet);
-        }
+    translate([Thick + m/2, Thick + m/2, Thick + m/2]) {
+        BPanL();
     }
 }
