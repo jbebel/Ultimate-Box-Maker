@@ -310,12 +310,11 @@ module Feet() {
     Filet: The radius of the rounded corners
 */
 module Panel(Length, Width, Thick, Filet) {
-    scale([0.5, 1, 1])
     minkowski() {
-        cube([Thick, Width - (Thick*2 + Filet*2 + m), Height - (Thick*2 + Filet*2 + m)]);
+        cube([Thick/2, Width - (Thick*2 + Filet*2 + m), Height - (Thick*2 + Filet*2 + m)]);
         translate([0, Filet, Filet]) {
             rotate([0, 90, 0]) {
-                cylinder(Thick, r=Filet, $fn=100);
+                cylinder(Thick/2, r=Filet, $fn=100);
             }
         }
     }
@@ -491,7 +490,7 @@ if (BShell == 1) {
 if (PCBFeet == 1) {
     // Feet
     translate([PCBPosX, PCBPosY, 0]) {
-        Feet();
+       Feet();
     }
 }
 
