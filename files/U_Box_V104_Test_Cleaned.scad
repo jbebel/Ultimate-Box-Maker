@@ -86,6 +86,8 @@ BPanL = 1; // [0:No, 1:Yes]
 Couleur1 = "Orange";
 // - Couleur panneaux - Panels color
 Couleur2 = "OrangeRed";
+// - Text colors
+TextColor = "White";
 // Thick X 2 - making decorations thicker if it is a vent to make sure they go through shell
 Dec_Thick = Vent ? Thick*2 : Thick;
 // - Depth decoration
@@ -456,14 +458,14 @@ module FPanL() {
         }
     }
 
-    color(Couleur1) {
+    color(TextColor) {
         translate ([-.5, 0, 0]) {
             rotate([90, 0, 90]) {
 //                            <- Adding text from here ->
-                //(On/Off, Xpos, Ypos, "Font", Size, "Text")
-                LText(1, 20, 83, "Arial Black", 4, "Digital Screen");
-                LText(1, 120, 83, "Arial Black", 4, "Level");
-                LText(1, 20, 11, "Arial Black", 6, "  1     2      3");
+                //(On/Off, Xpos, Ypos, "Font", Size, "Text", "HAlign")
+                LText(1, 20, 83, "Arial Black", 4, "Digital Screen", HAlign="left");
+                LText(1, 120, 83, "Arial Black", 4, "Level", HAlign="left");
+                LText(1, 20, 11, "Arial Black", 6, "  1     2      3", HAlign="left");
                 //(On/Off, Xpos, Ypos, "Font", Size, Diameter, Arc(Deg), Starting Angle(Deg),"Text")
                 CText(1, 93, 29, "Arial Black", 4, 10, 180, 0, "1 . 2 . 3 . 4 . 5 . 6");
 //                            <- To here ->
@@ -495,7 +497,7 @@ module BPanL() {
                 }
             }
 
-            color(Couleur1) {
+            color(TextColor) {
                 translate ([-.5, 0, 0]) {
                     rotate([90, 0, 90]) {
         //                            <- Adding text from here ->
