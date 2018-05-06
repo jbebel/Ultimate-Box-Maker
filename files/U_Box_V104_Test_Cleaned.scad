@@ -375,12 +375,13 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
     Font: Font to use for text
     Size: Approximate Height of text in mm.
     Content: The text
+    HAlign: Text alignment. Defaults to "center"
 */
-module LText(OnOff,Tx,Ty,Font,Size,Content) {
+module LText(OnOff,Tx,Ty,Font,Size,Content, HAlign="center") {
     if (OnOff == 1) {
         translate([Tx, Ty, Thick + .5]) {
             linear_extrude(height=0.5) {
-                text(Content, size=Size, font=Font);
+                text(Content, size=Size, font=Font, halign=HAlign);
             }
         }
     }
