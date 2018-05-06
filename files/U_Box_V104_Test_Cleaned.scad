@@ -310,6 +310,7 @@ module Feet() {
     but uses the global parameters.
 */
 module Panel() {
+    echo("Panel:", Thick=Thick, PanelWidth=PanelWidth, PanelHeight=PanelHeight);
     minkowski() {
         cube([Thick/2, PanelWidth - Filet*2, PanelHeight - Filet*2]);
         translate([0, Filet, Filet]) {
@@ -333,6 +334,7 @@ module Panel() {
 */
 module CylinderHole(OnOff, Cx, Cy, Cdia) {
     if (OnOff == 1) {
+        echo("CylinderHole:", Cx=Cx, Cy=Cy, Cdia=Cdia);
         translate([Cx, Cy, -1]) {
             cylinder(10, d=Cdia, $fn=50);
         }
@@ -354,6 +356,7 @@ module CylinderHole(OnOff, Cx, Cy, Cdia) {
 */
 module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
     if (OnOff == 1) {
+        echo("SquareHole:", Sx=Sx, Sy=Sy, Sl=Sl, Sw=Sw, Filet=Filet);
         minkowski() {
             translate([Sx + Filet/2, Sy + Filet/2, -1]) {
                 cube([Sl - Filet, Sw - Filet, 10]);
@@ -379,6 +382,7 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
 */
 module LText(OnOff,Tx,Ty,Font,Size,Content, HAlign="center") {
     if (OnOff == 1) {
+        echo("LText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size, Content=Content, HAlign=HAlign);
         translate([Tx, Ty, Thick + .5]) {
             linear_extrude(height=0.5) {
                 text(Content, size=Size, font=Font, halign=HAlign);
@@ -404,6 +408,8 @@ module LText(OnOff,Tx,Ty,Font,Size,Content, HAlign="center") {
 */
 module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
     if (OnOff == 1) {
+        echo("CText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size,
+             TxtRadius=TxtRadius, Turn=Turn, Content=Content);
         Angle = -Angl / len(Content);
         translate([Tx, Ty, Thick + .5]) {
             for (i= [0 : len(Content) - 1] ) {
