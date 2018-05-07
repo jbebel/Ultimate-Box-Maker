@@ -537,11 +537,10 @@ if (BShell == 1) {
     color(Couleur1) {
         Coque();
     }
-}
-
-// Pied support PCB - PCB feet
-if (PCBFeet == 1) {
-    Feet();
+    // Pied support PCB - PCB feet
+    if (PCBFeet == 1) {
+       Feet();
+    }
 }
 
 // Panneau avant - Front panel
