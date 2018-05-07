@@ -102,8 +102,8 @@ Height = FootHeight + TopMargin + Thick*2;
 echo("Box: ", Length=Length, Width=Width, Height=Height);
 
 // Calculate panel dimensions from box dimensions.
-PanelWidth = Width - (Thick*2) - m;
-PanelHeight = Height - (Thick*2) - m;
+PanelWidth = Width - Thick*2 - m;
+PanelHeight = Height - Thick*2 - m;
 
 
 /* Generic rounded box
@@ -523,7 +523,7 @@ module BPanL() {
 
 if (TShell == 1) {
     // Coque haut - Top Shell
-    color( Couleur1, 1) {
+    color(Couleur1) {
         translate([0, Width, Height + 0.2]) {
             rotate([0, 180, 180]) {
                 Coque();
