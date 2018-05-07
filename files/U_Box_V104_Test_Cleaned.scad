@@ -26,18 +26,10 @@
 ////////// - Paramètres de la boite - Box parameters - /////////////
 
 
-/* [Box dimensions] */
-// - Longueur - Length
-Length = 160;
-// - Largeur - Width
-Width = 170;
-// - Hauteur - Height
-Height = 100;
-// - Epaisseur - Wall thickness
-Thick = 2; //[2:5]
-
 
 /* [Box options] */
+// - Epaisseur - Wall thickness
+Thick = 2; //[2:5]
 // - Diamètre Coin arrondi - Filet diameter
 Filet = 2; //[0.1:12]
 // - lissage de l'arrondi - Filet smoothness
@@ -51,17 +43,26 @@ Vent = 1; // [0:No, 1:Yes]
 // - Decoration-Holes width (in mm)
 Vent_width = 1.5;
 
+/* [PCB options] */
+// - Longueur PCB - PCB Length
+PCBLength = 80;
+// - Largeur PCB - PCB Width
+PCBWidth = 60;
+// You likely need to maintain |Thick| margin on the left and right for tabs
+// and whatnot.
+// - Margin between front panel and PCB
+FrontEdgeMargin = 60;
+// - Margin between back panel and PCB
+BackEdgeMargin = 10;
+// - Margin between left wall and PCB
+LeftEdgeMargin = 11;
+// - Margin between right wall and PCB
+RightEdgeMargin = 95;
+// - Margin between top of PCB foot and box top.
+TopMargin = 86;
 
 /* [PCB_Feet] */
 //All dimensions are from the center foot axis
-// - Coin bas gauche - Low left corner X position
-PCBPosX = 7;
-// - Coin bas gauche - Low left corner Y position
-PCBPosY = 6;
-// - Longueur PCB - PCB Length
-PCBLength = 70;
-// - Largeur PCB - PCB Width
-PCBWidth = 50;
 // - Heuteur pied - Feet height
 FootHeight = 10;
 // - Diamètre pied - Foot diameter
@@ -93,6 +94,12 @@ Dec_Thick = Vent ? Thick*2 : Thick;
 // - Depth decoration
 Dec_size = Vent ? Thick*2 : 0.8;
 
+
+// Calculate box dimensions from PCB.
+Length = PCBLength + FrontEdgeMargin + BackEdgeMargin + ((Thick*2 + m)*2);
+Width = PCBWidth + LeftEdgeMargin + RightEdgeMargin + Thick*2;
+Height = FootHeight + TopMargin + Thick*2;
+echo("Box: ", Length=Length, Width=Width, Height=Height);
 
 // Calculate panel dimensions from box dimensions.
 PanelWidth = Width - (Thick*2) - m;
@@ -274,30 +281,31 @@ module foot(FootDia, FootHole, FootHeight) {
     No arguments are used, but parameters provide the PCB and foot dimensions.
 */
 module Feet() {
-//////////////////// - PCB only visible in the preview mode - /////////////////////
-    translate([(3*Thick + 2), Thick + 5, (FootHeight + Thick/2 - 0.5)]) {
-        %square([PCBLength + 10, PCBWidth + 10]);
-        translate([PCBLength/2, PCBWidth/2, 0.5]) {
-            color("Olive") {
-                %text("PCB", halign="center", valign="center", font="Arial black");
+    translate([BackEdgeMargin + Thick*2 + m, LeftEdgeMargin + Thick, 0]) {
+    //////////////////// - PCB only visible in the preview mode - /////////////////////
+        translate([0, 0, (FootHeight + Thick/2 - 0.5)]) {
+            %square([PCBLength, PCBWidth]);
+            translate([PCBLength/2, PCBWidth/2, 0.5]) {
+                color("Olive") {
+                    %text("PCB", halign="center", valign="center", font="Arial black");
+                }
             }
+        } // Fin PCB
+    
+    ////////////////////////////// - 4 Feet - //////////////////////////////////////////
+        translate([5, 5, Thick/2]) {
+            foot(FootDia, FootHole, FootHeight);
         }
-    } // Fin PCB
-
-////////////////////////////// - 4 Feet - //////////////////////////////////////////
-    translate([3*Thick + 7, Thick + 10, Thick/2]) {
-        foot(FootDia, FootHole, FootHeight);
-    }
-    translate([(3*Thick + PCBLength + 7), Thick + 10, Thick/2]) {
-        foot(FootDia, FootHole, FootHeight);
+        translate([(PCBLength - 5), 5, Thick/2]) {
+            foot(FootDia, FootHole, FootHeight);
+            }
+        translate([PCBLength - 5, PCBWidth - 5, Thick/2]) {
+            foot(FootDia, FootHole, FootHeight);
+            }
+        translate([5, PCBWidth - 5, Thick/2]) {
+            foot(FootDia, FootHole, FootHeight);
         }
-    translate([3*Thick + PCBLength + 7, Thick + PCBWidth + 10, Thick/2]) {
-        foot(FootDia, FootHole, FootHeight);
-        }
-    translate([3*Thick + 7, Thick + PCBWidth + 10, Thick/2]) {
-        foot(FootDia, FootHole, FootHeight);
-    }
-
+    } // End main translate
 } // Fin du module Feet
 
 
@@ -533,10 +541,7 @@ if (BShell == 1) {
 
 // Pied support PCB - PCB feet
 if (PCBFeet == 1) {
-    // Feet
-    translate([PCBPosX, PCBPosY, 0]) {
-       Feet();
-    }
+    Feet();
 }
 
 // Panneau avant - Front panel
