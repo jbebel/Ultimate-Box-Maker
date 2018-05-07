@@ -71,6 +71,32 @@ FootDia = 8;
 FootHole = 3;
 
 
+// Foot centers are specified as distance from PCB top-left corner.
+// X is along the "length" axis, and Y is along the "width" axis.
+// - Foot 1 distance from top PCB edge
+Foot1X = 5;
+// - Foot 1 distance from left edge
+Foot1Y = 5;
+
+// - Foot 2 distance from top PCB edge
+Foot2X = 5;
+// - Foot 2 distance from left edge
+Foot2YFromEdge = 5;
+Foot2Y = PCBWidth - Foot2YFromEdge;
+
+// - Foot 3 distance from top PCB edge
+Foot3XFromEdge = 5;
+Foot3X = PCBLength - Foot3XFromEdge;
+// - Foot 3 distance from left edge
+Foot3Y = 5;
+
+// - Foot 4 distance from top PCB edge
+Foot4XFromEdge = 5;
+Foot4X = PCBLength - Foot4XFromEdge;
+// - Foot 3 distance from left edge
+Foot4YFromEdge = 5;
+Foot4Y = PCBWidth - Foot4YFromEdge;
+
 /* [STL element to export] */
 //Coque haut - Top shell
 TShell = 0; // [0:No, 1:Yes]
@@ -293,16 +319,16 @@ module Feet() {
         } // Fin PCB
     
     ////////////////////////////// - 4 Feet - //////////////////////////////////////////
-        translate([5, 5, Thick/2]) {
+        translate([Foot1X, Foot1Y, Thick/2]) {
             foot(FootDia, FootHole, FootHeight);
         }
-        translate([(PCBLength - 5), 5, Thick/2]) {
+        translate([Foot2X, Foot2Y, Thick/2]) {
             foot(FootDia, FootHole, FootHeight);
             }
-        translate([PCBLength - 5, PCBWidth - 5, Thick/2]) {
+        translate([Foot3X, Foot3Y, Thick/2]) {
             foot(FootDia, FootHole, FootHeight);
             }
-        translate([5, PCBWidth - 5, Thick/2]) {
+        translate([Foot4X, Foot4Y, Thick/2]) {
             foot(FootDia, FootHole, FootHeight);
         }
     } // End main translate
