@@ -48,6 +48,8 @@ Vent_width = 1.5;
 PCBLength = 80;
 // - Largeur PCB - PCB Width
 PCBWidth = 60;
+// - Epaisseur PCB Thickness
+PCBThick = 1.6;
 // You likely need to maintain |Thick| margin on the left and right for tabs
 // and whatnot.
 // - Margin between front panel and PCB
@@ -58,8 +60,10 @@ BackEdgeMargin = 10;
 LeftEdgeMargin = 11;
 // - Margin between right wall and PCB
 RightEdgeMargin = 95;
-// - Margin between top of PCB foot and box top.
-TopMargin = 86;
+// - Margin between top of PCB and box top.
+TopPCBMargin = 84;
+
+
 
 /* [PCB_Feet] */
 // - Heuteur pied - Feet height above box interior
@@ -121,6 +125,8 @@ Dec_size = Vent ? Thick*2 : 0.8;
 
 
 // Calculate box dimensions from PCB.
+
+TopMargin = PCBThick + TopPCBMargin;
 Length = PCBLength + FrontEdgeMargin + BackEdgeMargin + ((Thick*2 + m)*2);
 Width = PCBWidth + LeftEdgeMargin + RightEdgeMargin + Thick*2;
 Height = FootHeight + TopMargin + Thick*2;
@@ -129,6 +135,12 @@ echo("Box: ", Length=Length, Width=Width, Height=Height);
 // Calculate panel dimensions from box dimensions.
 PanelWidth = Width - Thick*2 - m;
 PanelHeight = Height - Thick*2 - m;
+
+
+// Calculate board-relative positions with respect to the panel, for
+// convenience in placing panel elements.
+TopOfBoardWRTPanel = FootHeight + PCBThick - (m/2);
+LeftEdgeOfBoardWRTPanel = LeftEdgeMargin - (m/2);
 
 
 /* Generic rounded box
@@ -307,8 +319,8 @@ module Feet() {
     translate([BackEdgeMargin + Thick*2 + m, LeftEdgeMargin + Thick, Thick]) {
     //////////////////// - PCB only visible in the preview mode - /////////////////////
         translate([0, 0, FootHeight]) {
-            %square([PCBLength, PCBWidth]);
-            translate([PCBLength/2, PCBWidth/2, 0.5]) {
+            %cube([PCBLength, PCBWidth, PCBThick]);
+            translate([PCBLength/2, PCBWidth/2, PCBThick + 0.5]) {
                 color("Olive") {
                     %text("PCB", halign="center", valign="center", font="Arial black");
                 }
