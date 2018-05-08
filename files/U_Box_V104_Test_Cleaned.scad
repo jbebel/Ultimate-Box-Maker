@@ -140,7 +140,8 @@ PanelHeight = Height - Thick*2 - m;
 // Calculate board-relative positions with respect to the panel, for
 // convenience in placing panel elements.
 TopOfBoardWRTPanel = FootHeight + PCBThick - (m/2);
-LeftEdgeOfBoardWRTPanel = LeftEdgeMargin - (m/2);
+LeftEdgeOfBoardWRTFPanel = LeftEdgeMargin - (m/2);
+LeftEdgeOfBoardWRTBPanel = RightEdgeMargin - (m/2);
 
 
 /* Generic rounded box
