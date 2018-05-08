@@ -62,9 +62,8 @@ RightEdgeMargin = 95;
 TopMargin = 86;
 
 /* [PCB_Feet] */
-//All dimensions are from the center foot axis
-// - Heuteur pied - Feet height
-FootHeight = 10;
+// - Heuteur pied - Feet height above box interior
+FootHeight = 8;
 // - Diamètre pied - Foot diameter
 FootDia = 8;
 // - Diamètre trou - Hole diameter
@@ -278,21 +277,19 @@ module Coque() { //Coque - Shell
 module foot(FootDia, FootHole, FootHeight) {
     Filet = 2;
     color(Couleur1) {
-        translate([0, 0, Filet - 1.5]) {
+        difference() {
             difference() {
-                difference() {
-                    cylinder(FootHeight - Thick, d=(FootDia + Filet), $fn=100);
-                    rotate_extrude($fn=100) {
-                        translate([(FootDia + Filet*2) / 2, Filet, 0]) {
-                             minkowski() {
-                                 square(10);
-                                 circle(Filet, $fn=100);
-                             }
+                cylinder(FootHeight, d=(FootDia + Filet), $fn=100);
+                rotate_extrude($fn=100) {
+                    translate([(FootDia + Filet*2) / 2, Filet, 0]) {
+                         minkowski() {
+                             square(10);
+                             circle(Filet, $fn=100);
                          }
                      }
                  }
-                 cylinder(FootHeight + 1, d=FootHole, $fn=100);
              }
+             cylinder(FootHeight + 1, d=FootHole, $fn=100);
          }
     }
 } // Fin module foot
@@ -307,9 +304,9 @@ module foot(FootDia, FootHole, FootHeight) {
     No arguments are used, but parameters provide the PCB and foot dimensions.
 */
 module Feet() {
-    translate([BackEdgeMargin + Thick*2 + m, LeftEdgeMargin + Thick, 0]) {
+    translate([BackEdgeMargin + Thick*2 + m, LeftEdgeMargin + Thick, Thick]) {
     //////////////////// - PCB only visible in the preview mode - /////////////////////
-        translate([0, 0, (FootHeight + Thick/2 - 0.5)]) {
+        translate([0, 0, FootHeight]) {
             %square([PCBLength, PCBWidth]);
             translate([PCBLength/2, PCBWidth/2, 0.5]) {
                 color("Olive") {
@@ -319,16 +316,16 @@ module Feet() {
         } // Fin PCB
     
     ////////////////////////////// - 4 Feet - //////////////////////////////////////////
-        translate([Foot1X, Foot1Y, Thick/2]) {
+        translate([Foot1X, Foot1Y]) {
             foot(FootDia, FootHole, FootHeight);
         }
-        translate([Foot2X, Foot2Y, Thick/2]) {
+        translate([Foot2X, Foot2Y]) {
             foot(FootDia, FootHole, FootHeight);
             }
-        translate([Foot3X, Foot3Y, Thick/2]) {
+        translate([Foot3X, Foot3Y]) {
             foot(FootDia, FootHole, FootHeight);
             }
-        translate([Foot4X, Foot4Y, Thick/2]) {
+        translate([Foot4X, Foot4Y]) {
             foot(FootDia, FootHole, FootHeight);
         }
     } // End main translate
