@@ -36,6 +36,8 @@ Filet = 2; //[0.1:12]
 Resolution = 50; //[1:100]
 // - Tolérance - Tolerance (Panel/rails gap)
 m = 0.9;
+// - Printer margin around interior cutouts
+CutoutMargin = 0.6;
 // Pieds PCB - PCB feet (x4)
 PCBFeet = 1; // [0:No, 1:Yes]
 // - Decorations to ventilation holes
@@ -62,6 +64,8 @@ LeftEdgeMargin = 11;
 RightEdgeMargin = 95;
 // - Margin between top of PCB and box top.
 TopPCBMargin = 84;
+// - Side screw hole diameter
+ScrewHole = 2.2606;
 
 
 
@@ -71,7 +75,7 @@ FootHeight = 8;
 // - Diamètre pied - Foot diameter
 FootDia = 8;
 // - Diamètre trou - Hole diameter
-FootHole = 3;
+FootHole = 2.2606; // tap size for #4 coarse-thread
 
 
 // Foot centers are specified as distance from PCB top-left corner.
@@ -254,22 +258,22 @@ module Coque() { //Coque - Shell
             $fn = 50;
             translate([3*Thick + 5, 20, Height/2 + 4]) {
                 rotate([90, 0, 0]) {
-                    cylinder(20, d=2);
+                    cylinder(20, d=ScrewHole);
                 }
             }
             translate([Length - (3*Thick + 5), 20, Height/2 + 4]) {
                 rotate([90, 0, 0]) {
-                    cylinder(20, d=2);
+                    cylinder(20, d=ScrewHole);
                 }
             }
             translate([3*Thick + 5, Width + 5, Height/2 - 4]) {
                 rotate([90, 0, 0]) {
-                    cylinder(20, d=2);
+                    cylinder(20, d=ScrewHole);
                 }
             }
             translate([Length - (3*Thick + 5), Width + 5, Height/2 - 4]) {
                 rotate([90, 0, 0]) {
-                    cylinder(20, d=2);
+                    cylinder(20, d=ScrewHole);
                 }
             }
         } //fin de sides holes
@@ -302,7 +306,7 @@ module foot(FootDia, FootHole, FootHeight) {
                      }
                  }
              }
-             cylinder(FootHeight + 1, d=FootHole, $fn=100);
+             cylinder(FootHeight + 1, d=FootHole + CutoutMargin, $fn=100);
          }
     }
 } // Fin module foot
@@ -380,9 +384,9 @@ module Panel() {
 */
 module CylinderHole(OnOff, Cx, Cy, Cdia) {
     if (OnOff == 1) {
-        echo("CylinderHole:", Cx=Cx, Cy=Cy, Cdia=Cdia);
+        echo("CylinderHole:", Cx=Cx, Cy=Cy, Cdia=Cdia + CutoutMargin);
         translate([Cx, Cy, -1]) {
-            cylinder(10, d=Cdia, $fn=50);
+            cylinder(10, d=Cdia + CutoutMargin, $fn=50);
         }
     }
 }
@@ -402,10 +406,10 @@ module CylinderHole(OnOff, Cx, Cy, Cdia) {
 */
 module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
     if (OnOff == 1) {
-        echo("SquareHole:", Sx=Sx, Sy=Sy, Sl=Sl, Sw=Sw, Filet=Filet);
+        echo("SquareHole:", Sx=Sx - CutoutMargin/2, Sy=Sy - CutoutMargin/2, Sl=Sl + CutoutMargin, Sw=Sw + CutoutMargin, Filet=Filet);
         minkowski() {
-            translate([Sx + Filet/2, Sy + Filet/2, -1]) {
-                cube([Sl - Filet, Sw - Filet, 10]);
+            translate([Sx + Filet/2 - CutoutMargin/2, Sy + Filet/2 - CutoutMargin/2, -1]) {
+                cube([Sl + CutoutMargin - Filet, Sw + CutoutMargin - Filet, 10]);
             }
             cylinder(10, d=Filet, $fn=100);
         }
