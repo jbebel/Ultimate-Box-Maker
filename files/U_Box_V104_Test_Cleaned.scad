@@ -177,7 +177,6 @@ module RoundBox($a=Length, $b=Width, $c=Height) { // Cube bords arrondis
     wall fixation legs and holes, and vents/decorations according to parameters.
 */
 module Coque() { //Coque - Shell
-    Thick = Thick*2;
     difference() {
         difference() { //sides decoration
             union() {
@@ -186,56 +185,56 @@ module Coque() { //Coque - Shell
                         union() { //union
                             difference() { //Coque
                                 RoundBox();
-                                translate([Thick/2, Thick/2, Thick/2]) {
-                                    RoundBox($a=(Length - Thick), $b=(Width - Thick), $c=(Height - Thick));
+                                translate([Thick, Thick, Thick]) {
+                                    RoundBox($a=(Length - Thick*2), $b=(Width - Thick*2), $c=(Height - Thick*2));
                                 }
                             } //Fin diff Coque
                             difference() { //largeur Rails
-                                translate([Thick + m, Thick/2, Thick/2]) { // Rails
-                                     RoundBox($a=(Length - (2*Thick + 2*m)), $b=(Width - Thick), $c=(Height - Thick*2));
+                                translate([Thick*2 + m, Thick, Thick]) { // Rails
+                                     RoundBox($a=(Length - (Thick*4 + 2*m)), $b=(Width - Thick*2), $c=(Height - Thick*4));
                                 } //fin Rails
                                 // +0.1 added to avoid the artefact
-                                translate([((Thick + m/2) * 1.55), Thick/2, Thick/2 + 0.1]) {
-                                     RoundBox($a=(Length - ((Thick*3) + 2*m)), $b=(Width - Thick), $c=(Height - Thick));
+                                translate([((Thick*2 + m/2) * 1.55), Thick, Thick + 0.1]) {
+                                     RoundBox($a=(Length - ((Thick*6) + 2*m)), $b=(Width - Thick*2), $c=(Height - Thick*2));
                                 }
                             } //Fin largeur Rails
                         } //Fin union
-                        translate([ -Thick, -Thick, Height/2]) { // Cube à soustraire
+                        translate([-Thick*2, -Thick*2, Height/2]) { // Cube à soustraire
                             cube([Length + 100, Width + 100, Height]);
                         }
                     } //fin soustraction cube median - End Median cube slicer
-                    translate([-Thick/2, Thick, Thick]) { // Forme de soustraction centrale
-                        RoundBox($a=(Length + Thick), $b=(Width - Thick*2), $c=(Height - Thick));
+                    translate([-Thick, Thick*2, Thick*2]) { // Forme de soustraction centrale
+                        RoundBox($a=(Length + Thick*2), $b=(Width - Thick*4), $c=(Height - Thick*2));
                     }
                 } // End difference for main box
 
                 difference() { // wall fixation box legs
                     union() {
-                        translate([3*Thick + 5, Thick, Height/2]) {
+                        translate([Thick*6 + 5, Thick*2, Height/2]) {
                             rotate([90, 0, 0]) {
-                                cylinder(Thick/2, d=16, $fn=6);
+                                cylinder(Thick, d=16, $fn=6);
                             }
                         }
-                        translate([Length - (3*Thick + 5), Thick, Height/2]) {
+                        translate([Length - (3*Thick*2 + 5), Thick*2, Height/2]) {
                             rotate([90, 0, 0]) {
-                                cylinder(Thick/2, d=16, $fn=6);
+                                cylinder(Thick, d=16, $fn=6);
                             }
                         }
                     }
-                    translate([4, Thick + Filet, Height/2 - 57]) {
+                    translate([4, Thick*2 + Filet, Height/2 - 57]) {
                         rotate([45, 0, 0]) {
                             cube([Length, 40, 40]);
                         }
                     }
-                    translate([0, -(Thick*1.46), Height/2]) {
-                        cube([Length, Thick*2, 10]);
+                    translate([0, -(Thick*2*1.46), Height/2]) {
+                        cube([Length, Thick*4, 10]);
                     }
                 } //Fin fixation box legs
             } // End union for box and legs
 
             union() { // outbox sides decorations
 
-                for (i=[0 : Thick : Length/4]) {
+                for (i=[0 : Thick*2 : Length/4]) {
                     // Ventilation holes part code submitted by Ettie - Thanks ;)
                     translate([10 + i, -Dec_Thick + Dec_size, 1]) {
                         cube([Vent_width, Dec_Thick, Height/4]);
@@ -256,22 +255,22 @@ module Coque() { //Coque - Shell
 
         union() { //sides holes
             $fn = 50;
-            translate([3*Thick + 5, 20, Height/2 + 4]) {
+            translate([Thick*6 + 5, 20, Height/2 + 4]) {
                 rotate([90, 0, 0]) {
                     cylinder(20, d=ScrewHole);
                 }
             }
-            translate([Length - (3*Thick + 5), 20, Height/2 + 4]) {
+            translate([Length - (Thick*6 + 5), 20, Height/2 + 4]) {
                 rotate([90, 0, 0]) {
                     cylinder(20, d=ScrewHole);
                 }
             }
-            translate([3*Thick + 5, Width + 5, Height/2 - 4]) {
+            translate([Thick*6 + 5, Width + 5, Height/2 - 4]) {
                 rotate([90, 0, 0]) {
                     cylinder(20, d=ScrewHole);
                 }
             }
-            translate([Length - (3*Thick + 5), Width + 5, Height/2 - 4]) {
+            translate([Length - (Thick*6 + 5), Width + 5, Height/2 - 4]) {
                 rotate([90, 0, 0]) {
                     cylinder(20, d=ScrewHole);
                 }
