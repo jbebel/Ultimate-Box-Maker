@@ -189,15 +189,21 @@ module Coque() { //Coque - Shell
                             difference() { //Coque
                                 RoundBox();
                                 translate([Thick, Thick, Thick]) {
-                                    RoundBox($a=(Length - Thick*2), $b=(Width - Thick*2), $c=(Height - Thick*2));
+                                    RoundBox($a=(Length - Thick*2),
+                                             $b=(Width - Thick*2),
+                                             $c=(Height - Thick*2));
                                 }
                             } //Fin diff Coque
                             difference() { //largeur Rails
                                 translate([Thick + PanelThick + m, Thick, Thick]) { // Rails
-                                     RoundBox($a=(Length - ((Thick + PanelThick + m)*2)), $b=(Width - Thick*2), $c=(Height - Thick*2));
+                                     RoundBox($a=(Length - ((Thick + PanelThick + m)*2)),
+                                              $b=(Width - Thick*2),
+                                              $c=(Height - Thick*2));
                                 } //fin Rails
                                 translate([Thick*2 + PanelThick + m, Thick, Thick]) {
-                                     RoundBox($a=(Length - ((Thick*2 + PanelThick + m) * 2)), $b=(Width - Thick*2), $c=(Height - Thick*2));
+                                     RoundBox($a=(Length - ((Thick*2 + PanelThick + m) * 2)),
+                                              $b=(Width - Thick*2),
+                                              $c=(Height - Thick*2));
                                 }
                             } //Fin largeur Rails
                         } //Fin union
@@ -407,7 +413,8 @@ module CylinderHole(OnOff, Cx, Cy, Cdia) {
 */
 module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
     if (OnOff == 1) {
-        echo("SquareHole:", Sx=Sx - CutoutMargin/2, Sy=Sy - CutoutMargin/2, Sl=Sl + CutoutMargin, Sw=Sw + CutoutMargin, Filet=Filet);
+        echo("SquareHole:", Sx=Sx - CutoutMargin/2, Sy=Sy - CutoutMargin/2,
+             Sl=Sl + CutoutMargin, Sw=Sw + CutoutMargin, Filet=Filet);
         minkowski() {
             translate([Sx + Filet/2 - CutoutMargin/2, Sy + Filet/2 - CutoutMargin/2, -1]) {
                 cube([Sl + CutoutMargin - Filet, Sw + CutoutMargin - Filet, 10]);
