@@ -220,13 +220,13 @@ module Coque() { //Coque - Shell
                             }
                         }
                     }
-                    translate([4, Thick*2 + Filet, Height/2 - 57]) {
+                    translate([0, Thick*2 + Filet, Height/2 - 57]) {
                         rotate([45, 0, 0]) {
                             cube([Length, 40, 40]);
                         }
                     }
-                    translate([0, -(Thick*2*1.46), Height/2]) {
-                        cube([Length, Thick*4, 10]);
+                    translate([0, 0, Height/2]) {
+                        cube([Length, Thick + 0.16, 10]);
                     }
                 } //Fin fixation box legs
             } // End union for box and legs
