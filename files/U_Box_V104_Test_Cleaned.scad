@@ -237,16 +237,16 @@ module Coque() { //Coque - Shell
 
                 for (i=[0 : Thick*2 : Length/4]) {
                     // Ventilation holes part code submitted by Ettie - Thanks ;)
-                    translate([(10 + PanelThick - Thick) + i, -Dec_Thick + Dec_size, 1]) {
+                    translate([(10 + PanelThick - Thick) + i - Vent_width/2, -Dec_Thick + Dec_size, 1]) {
                         cube([Vent_width, Dec_Thick, Height/4]);
                     }
-                    translate([(Length - (10 + PanelThick - Thick)) - i, -Dec_Thick + Dec_size, 1]) {
+                    translate([(Length - (10 + PanelThick - Thick)) - i - Vent_width/2, -Dec_Thick + Dec_size, 1]) {
                         cube([Vent_width, Dec_Thick, Height/4]);
                     }
-                    translate([(Length - (10 + PanelThick - Thick)) - i, Width - Dec_size, 1]) {
+                    translate([(Length - (10 + PanelThick - Thick)) - i - Vent_width/2, Width - Dec_size, 1]) {
                         cube([Vent_width, Dec_Thick, Height/4]);
                     }
-                    translate([(10 + PanelThick - Thick) + i, Width - Dec_size, 1]) {
+                    translate([(10 + PanelThick - Thick) + i - Vent_width/2, Width - Dec_size, 1]) {
                         cube([Vent_width, Dec_Thick, Height/4]);
                     }
                 } // fin de for
