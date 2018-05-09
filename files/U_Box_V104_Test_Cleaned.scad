@@ -203,7 +203,7 @@ module Coque() { //Coque - Shell
                         }
                     } //fin soustraction cube median - End Median cube slicer
                     translate([-Thick, Thick*2, Thick*2]) { // Forme de soustraction centrale
-                        RoundBox($a=(Length + Thick*2), $b=(Width - Thick*4), $c=(Height - Thick*2));
+                        RoundBox($a=(Length + Thick*2), $b=(Width - Thick*4), $c=(Height - Thick*4));
                     }
                 } // End difference for main box
 
