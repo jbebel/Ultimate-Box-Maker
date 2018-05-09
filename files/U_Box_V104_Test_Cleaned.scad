@@ -193,8 +193,7 @@ module Coque() { //Coque - Shell
                                 translate([Thick*2 + m, Thick, Thick]) { // Rails
                                      RoundBox($a=(Length - (Thick*4 + 2*m)), $b=(Width - Thick*2), $c=(Height - Thick*4));
                                 } //fin Rails
-                                // +0.1 added to avoid the artefact
-                                translate([((Thick*2 + m/2) * 1.55), Thick, Thick + 0.1]) {
+                                translate([Thick*3 + m, Thick, Thick]) {
                                      RoundBox($a=(Length - ((Thick*6) + 2*m)), $b=(Width - Thick*2), $c=(Height - Thick*2));
                                 }
                             } //Fin largeur Rails
