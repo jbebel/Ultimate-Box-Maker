@@ -78,6 +78,7 @@ FootHeight = 8;
 FootDia = 8;
 // - Diamètre trou - Hole diameter
 FootHole = 2.2606; // tap size for #4 coarse-thread
+FootFilet = Thick;
 
 
 // Foot centers are specified as distance from PCB top-left corner.
@@ -292,7 +293,7 @@ module Coque() { //Coque - Shell
     FootHeight: Height of the foot above the box interior
 */
 module foot(FootDia, FootHole, FootHeight) {
-    Filet = 2;
+    Filet = FootFilet;
     color(Couleur1) {
         difference() {
             difference() {
