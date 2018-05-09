@@ -30,6 +30,8 @@
 /* [Box options] */
 // - Epaisseur - Wall thickness
 Thick = 2; //[2:5]
+// - Panel thickness
+PanelThick = 2;
 // - Diamètre Coin arrondi - Filet diameter
 Filet = 2; //[0.1:12]
 // - lissage de l'arrondi - Filet smoothness
@@ -131,7 +133,7 @@ Dec_size = Vent ? Thick*2 : 0.8;
 // Calculate box dimensions from PCB.
 
 TopMargin = PCBThick + TopPCBMargin;
-Length = PCBLength + FrontEdgeMargin + BackEdgeMargin + ((Thick*2 + m)*2);
+Length = PCBLength + FrontEdgeMargin + BackEdgeMargin + ((Thick + PanelThick + m)*2);
 Width = PCBWidth + LeftEdgeMargin + RightEdgeMargin + Thick*2;
 Height = FootHeight + TopMargin + Thick*2;
 echo("Box: ", Length=Length, Width=Width, Height=Height);
@@ -190,11 +192,11 @@ module Coque() { //Coque - Shell
                                 }
                             } //Fin diff Coque
                             difference() { //largeur Rails
-                                translate([Thick*2 + m, Thick, Thick]) { // Rails
-                                     RoundBox($a=(Length - (Thick*4 + 2*m)), $b=(Width - Thick*2), $c=(Height - Thick*2));
+                                translate([Thick + PanelThick + m, Thick, Thick]) { // Rails
+                                     RoundBox($a=(Length - ((Thick + PanelThick + m)*2)), $b=(Width - Thick*2), $c=(Height - Thick*2));
                                 } //fin Rails
-                                translate([Thick*3 + m, Thick, Thick]) {
-                                     RoundBox($a=(Length - ((Thick*6) + 2*m)), $b=(Width - Thick*2), $c=(Height - Thick*2));
+                                translate([Thick*2 + PanelThick + m, Thick, Thick]) {
+                                     RoundBox($a=(Length - ((Thick*2 + PanelThick + m) * 2)), $b=(Width - Thick*2), $c=(Height - Thick*2));
                                 }
                             } //Fin largeur Rails
                         } //Fin union
@@ -209,12 +211,12 @@ module Coque() { //Coque - Shell
 
                 difference() { // wall fixation box legs
                     union() {
-                        translate([Thick*6 + 5, Thick*2, Height/2]) {
+                        translate([Thick*5 + PanelThick + 5, Thick*2, Height/2]) {
                             rotate([90, 0, 0]) {
                                 cylinder(Thick, d=16, $fn=6);
                             }
                         }
-                        translate([Length - (3*Thick*2 + 5), Thick*2, Height/2]) {
+                        translate([Length - (Thick*5 + PanelThick + 5), Thick*2, Height/2]) {
                             rotate([90, 0, 0]) {
                                 cylinder(Thick, d=16, $fn=6);
                             }
@@ -235,16 +237,16 @@ module Coque() { //Coque - Shell
 
                 for (i=[0 : Thick*2 : Length/4]) {
                     // Ventilation holes part code submitted by Ettie - Thanks ;)
-                    translate([10 + i, -Dec_Thick + Dec_size, 1]) {
+                    translate([(10 + PanelThick - Thick) + i, -Dec_Thick + Dec_size, 1]) {
                         cube([Vent_width, Dec_Thick, Height/4]);
                     }
-                    translate([(Length - 10) - i, -Dec_Thick + Dec_size, 1]) {
+                    translate([(Length - (10 + PanelThick - Thick)) - i, -Dec_Thick + Dec_size, 1]) {
                         cube([Vent_width, Dec_Thick, Height/4]);
                     }
-                    translate([(Length - 10) - i, Width - Dec_size, 1]) {
+                    translate([(Length - (10 + PanelThick - Thick)) - i, Width - Dec_size, 1]) {
                         cube([Vent_width, Dec_Thick, Height/4]);
                     }
-                    translate([10 + i, Width - Dec_size, 1]) {
+                    translate([(10 + PanelThick - Thick) + i, Width - Dec_size, 1]) {
                         cube([Vent_width, Dec_Thick, Height/4]);
                     }
                 } // fin de for
@@ -254,22 +256,22 @@ module Coque() { //Coque - Shell
 
         union() { //sides holes
             $fn = 50;
-            translate([Thick*6 + 5, 20, Height/2 + 4]) {
+            translate([Thick*5 + PanelThick + 5, 20, Height/2 + 4]) {
                 rotate([90, 0, 0]) {
                     cylinder(20, d=ScrewHole);
                 }
             }
-            translate([Length - (Thick*6 + 5), 20, Height/2 + 4]) {
+            translate([Length - (Thick*5 + PanelThick + 5), 20, Height/2 + 4]) {
                 rotate([90, 0, 0]) {
                     cylinder(20, d=ScrewHole);
                 }
             }
-            translate([Thick*6 + 5, Width + 5, Height/2 - 4]) {
+            translate([Thick*5 + PanelThick + 5, Width + 5, Height/2 - 4]) {
                 rotate([90, 0, 0]) {
                     cylinder(20, d=ScrewHole);
                 }
             }
-            translate([Length - (Thick*6 + 5), Width + 5, Height/2 - 4]) {
+            translate([Length - (Thick*5 + PanelThick + 5), Width + 5, Height/2 - 4]) {
                 rotate([90, 0, 0]) {
                     cylinder(20, d=ScrewHole);
                 }
@@ -319,7 +321,7 @@ module foot(FootDia, FootHole, FootHeight) {
     No arguments are used, but parameters provide the PCB and foot dimensions.
 */
 module Feet() {
-    translate([BackEdgeMargin + Thick*2 + m, LeftEdgeMargin + Thick, Thick]) {
+    translate([BackEdgeMargin + Thick + PanelThick + m, LeftEdgeMargin + Thick, Thick]) {
     //////////////////// - PCB only visible in the preview mode - /////////////////////
         translate([0, 0, FootHeight]) {
             %cube([PCBLength, PCBWidth, PCBThick]);
@@ -358,12 +360,12 @@ module Feet() {
     but uses the global parameters.
 */
 module Panel() {
-    echo("Panel:", Thick=Thick, PanelWidth=PanelWidth, PanelHeight=PanelHeight);
+    echo("Panel:", Thick=PanelThick, PanelWidth=PanelWidth, PanelHeight=PanelHeight);
     minkowski() {
-        cube([Thick/2, PanelWidth - Filet*2, PanelHeight - Filet*2]);
+        cube([PanelThick/2, PanelWidth - Filet*2, PanelHeight - Filet*2]);
         translate([0, Filet, Filet]) {
             rotate([0, 90, 0]) {
-                cylinder(Thick/2, r=Filet, $fn=100);
+                cylinder(PanelThick/2, r=Filet, $fn=100);
             }
         }
     }
@@ -431,7 +433,7 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
 module LText(OnOff,Tx,Ty,Font,Size,Content, HAlign="center") {
     if (OnOff == 1) {
         echo("LText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size, Content=Content, HAlign=HAlign);
-        translate([Tx, Ty, Thick + .5]) {
+        translate([Tx, Ty, PanelThick + .5]) {
             linear_extrude(height=0.5) {
                 text(Content, size=Size, font=Font, halign=HAlign);
             }
@@ -459,7 +461,7 @@ module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
         echo("CText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size,
              TxtRadius=TxtRadius, Turn=Turn, Content=Content);
         Angle = -Angl / len(Content);
-        translate([Tx, Ty, Thick + .5]) {
+        translate([Tx, Ty, PanelThick + .5]) {
             for (i= [0 : len(Content) - 1] ) {
                 rotate([0, 0, i*Angle + 90 + Turn]) {
                     translate([0, TxtRadius, 0]) {
@@ -528,7 +530,7 @@ module FPanL() {
     edited to produce holes and text for your box.
 */
 module BPanL() {
-    translate([Thick, PanelWidth, 0]) {
+    translate([PanelThick, PanelWidth, 0]) {
         rotate([0, 0, 180]) {
             difference() {
                 color(Couleur2) {
