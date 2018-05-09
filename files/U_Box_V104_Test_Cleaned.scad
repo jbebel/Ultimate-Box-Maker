@@ -297,7 +297,7 @@ module foot(FootDia, FootHole, FootHeight) {
     color(Couleur1) {
         difference() {
             difference() {
-                cylinder(FootHeight, d=(FootDia + Filet), $fn=100);
+                cylinder(FootHeight, d=(FootDia + Filet*2), $fn=100);
                 rotate_extrude($fn=100) {
                     translate([FootDia/2 + Filet, Filet, 0]) {
                          minkowski() {
