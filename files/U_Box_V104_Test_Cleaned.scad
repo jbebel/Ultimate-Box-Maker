@@ -300,7 +300,7 @@ module foot(FootDia, FootHole, FootHeight) {
                 rotate_extrude($fn=100) {
                     translate([(FootDia + Filet*2) / 2, Filet, 0]) {
                          minkowski() {
-                             square(10);
+                             square(FootHeight);
                              circle(Filet, $fn=100);
                          }
                      }
