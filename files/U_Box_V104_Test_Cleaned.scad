@@ -299,7 +299,7 @@ module foot(FootDia, FootHole, FootHeight) {
             difference() {
                 cylinder(FootHeight, d=(FootDia + Filet), $fn=100);
                 rotate_extrude($fn=100) {
-                    translate([(FootDia + Filet*2) / 2, Filet, 0]) {
+                    translate([FootDia/2 + Filet, Filet, 0]) {
                          minkowski() {
                              square(FootHeight);
                              circle(Filet, $fn=100);
