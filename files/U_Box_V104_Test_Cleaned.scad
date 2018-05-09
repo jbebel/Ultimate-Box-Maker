@@ -198,8 +198,8 @@ module Coque() { //Coque - Shell
                                 }
                             } //Fin largeur Rails
                         } //Fin union
-                        translate([-Thick*2, -Thick*2, Height/2]) { // Cube à soustraire
-                            cube([Length + 100, Width + 100, Height]);
+                        translate([-Thick, -Thick, Height/2]) { // Cube à soustraire
+                            cube([Length + Thick*2, Width + Thick*2, Height]);
                         }
                     } //fin soustraction cube median - End Median cube slicer
                     translate([-Thick, Thick*2, Thick*2]) { // Forme de soustraction centrale
