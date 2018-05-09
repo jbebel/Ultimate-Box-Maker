@@ -392,8 +392,8 @@ module Panel() {
 module CylinderHole(OnOff, Cx, Cy, Cdia) {
     if (OnOff == 1) {
         echo("CylinderHole:", Cx=Cx, Cy=Cy, Cdia=Cdia + CutoutMargin);
-        translate([Cx, Cy, -1]) {
-            cylinder(10, d=Cdia + CutoutMargin, $fn=50);
+        translate([Cx, Cy, -PanelThick/2]) {
+            cylinder(PanelThick*2, d=Cdia + CutoutMargin, $fn=50);
         }
     }
 }
@@ -416,10 +416,10 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
         echo("SquareHole:", Sx=Sx - CutoutMargin/2, Sy=Sy - CutoutMargin/2,
              Sl=Sl + CutoutMargin, Sw=Sw + CutoutMargin, Filet=Filet);
         minkowski() {
-            translate([Sx + Filet/2 - CutoutMargin/2, Sy + Filet/2 - CutoutMargin/2, -1]) {
-                cube([Sl + CutoutMargin - Filet, Sw + CutoutMargin - Filet, 10]);
+            translate([Sx + Filet/2 - CutoutMargin/2, Sy + Filet/2 - CutoutMargin/2, -PanelThick/2]) {
+                cube([Sl + CutoutMargin - Filet, Sw + CutoutMargin - Filet, PanelThick]);
             }
-            cylinder(10, d=Filet, $fn=100);
+            cylinder(PanelThick, d=Filet, $fn=100);
         }
     }
 }
