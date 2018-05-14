@@ -132,7 +132,6 @@ Dec_size = Vent ? Thick*2 : 0.8;
 
 
 // Calculate box dimensions from PCB.
-
 TopMargin = PCBThick + TopPCBMargin;
 Length = PCBLength + FrontEdgeMargin + BackEdgeMargin + ((Thick + PanelThick + m)*2);
 Width = PCBWidth + LeftEdgeMargin + RightEdgeMargin + Thick*2;
@@ -329,7 +328,7 @@ module foot(FootDia, FootHole, FootHeight) {
 */
 module Feet() {
     translate([BackEdgeMargin + Thick + PanelThick + m, LeftEdgeMargin + Thick, Thick]) {
-    //////////////////// - PCB only visible in the preview mode - /////////////////////
+        /////////////// - PCB only visible in the preview mode - ///////////////
         translate([0, 0, FootHeight]) {
             %cube([PCBLength, PCBWidth, PCBThick]);
             translate([PCBLength/2, PCBWidth/2, PCBThick + 0.5]) {
@@ -339,7 +338,7 @@ module Feet() {
             }
         } // Fin PCB
     
-    ////////////////////////////// - 4 Feet - //////////////////////////////////////////
+        ////////////////////////////// - 4 Feet - //////////////////////////////
         translate([Foot1X, Foot1Y]) {
             foot(FootDia, FootHole, FootHeight);
         }
