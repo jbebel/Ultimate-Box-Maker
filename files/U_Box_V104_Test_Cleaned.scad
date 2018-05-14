@@ -35,7 +35,7 @@ PanelThick = 2;
 // - Diamètre Coin arrondi - Filet diameter
 Filet = 2; //[0.1:12]
 // - 0 for beveled, 1 for rounded
-Round = 0;
+Round = 1; // [0:No, 1:Yes]
 // - Tolérance - Tolerance (Panel/rails gap)
 m = 0.9;
 // - Printer margin around interior cutouts
