@@ -34,8 +34,8 @@ Thick = 2; //[2:5]
 PanelThick = 2;
 // - Diamètre Coin arrondi - Filet diameter
 Filet = 2; //[0.1:12]
-// - lissage de l'arrondi - Filet smoothness
-Resolution = 50; //[1:100]
+// - 0 for beveled, 1 for rounded
+Round = 0;
 // - Tolérance - Tolerance (Panel/rails gap)
 m = 0.9;
 // - Printer margin around interior cutouts
@@ -129,6 +129,10 @@ TextColor = "White";
 Dec_Thick = Vent ? Thick*2 : Thick;
 // - Depth decoration
 Dec_size = Vent ? Thick*2 : 0.8;
+// Resolution based on Round parameter
+Resolution = Round ? 100: 4;
+echo(Round=Round, Resolution=Resolution);
+
 
 
 // Calculate box dimensions from PCB.
@@ -261,7 +265,7 @@ module Coque() { //Coque - Shell
         } //fin difference decoration
 
         union() { //sides holes
-            $fn = 50;
+            $fn = 100;
             translate([Thick*5 + PanelThick + 5, 20, Height/2 + 4]) {
                 rotate([90, 0, 0]) {
                     cylinder(20, d=ScrewHole);
@@ -307,7 +311,7 @@ module foot(FootDia, FootHole, FootHeight) {
                     translate([FootDia/2 + Filet, Filet, 0]) {
                          minkowski() {
                              square(FootHeight);
-                             circle(Filet, $fn=100);
+                             circle(Filet, $fn=Resolution);
                          }
                      }
                  }
@@ -371,7 +375,7 @@ module Panel() {
         cube([PanelThick/2, PanelWidth - Filet*2, PanelHeight - Filet*2]);
         translate([0, Filet, Filet]) {
             rotate([0, 90, 0]) {
-                cylinder(PanelThick/2, r=Filet, $fn=100);
+                cylinder(PanelThick/2, r=Filet, $fn=Resolution);
             }
         }
     }
@@ -392,7 +396,7 @@ module CylinderHole(OnOff, Cx, Cy, Cdia) {
     if (OnOff == 1) {
         echo("CylinderHole:", Cx=Cx, Cy=Cy, Cdia=Cdia + CutoutMargin);
         translate([Cx, Cy, -PanelThick/2]) {
-            cylinder(PanelThick*2, d=Cdia + CutoutMargin, $fn=50);
+            cylinder(PanelThick*2, d=Cdia + CutoutMargin, $fn=100);
         }
     }
 }
@@ -418,7 +422,7 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
             translate([Sx + Filet/2 - CutoutMargin/2, Sy + Filet/2 - CutoutMargin/2, -PanelThick/2]) {
                 cube([Sl + CutoutMargin - Filet, Sw + CutoutMargin - Filet, PanelThick]);
             }
-            cylinder(PanelThick, d=Filet, $fn=100);
+            cylinder(PanelThick, d=Filet, $fn=Resolution);
         }
     }
 }
