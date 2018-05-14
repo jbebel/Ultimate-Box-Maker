@@ -332,7 +332,7 @@ module Feet() {
             translate([PCBLength/2, PCBWidth/2, PCBThick]) {
                 color("Olive") {
                     linear_extrude(FontThick) {
-                        text("PCB", halign="center", valign="center", font="Arial black");
+                        text("PCB", font="Arial black", halign="center", valign="center");
                     }
                 }
             }
