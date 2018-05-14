@@ -31,7 +31,7 @@ Thick = 2; //[2:5]
 // - Panel thickness
 PanelThick = 2;
 // - Font Thickness
-FontThick = 3;
+FontThick = 0.5;
 // - Diamètre Coin arrondi - Filet diameter
 Filet = 2; //[0.1:12]
 // - 0 for beveled, 1 for rounded
