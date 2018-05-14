@@ -327,11 +327,13 @@ module foot(FootDia, FootHole, FootHeight) {
 module Feet() {
     translate([BackEdgeMargin + Thick + PanelThick + m, LeftEdgeMargin + Thick, Thick]) {
         /////////////// - PCB only visible in the preview mode - ///////////////
-        translate([0, 0, FootHeight]) {
-            %cube([PCBLength, PCBWidth, PCBThick]);
+        %translate([0, 0, FootHeight]) {
+            cube([PCBLength, PCBWidth, PCBThick]);
             translate([PCBLength/2, PCBWidth/2, PCBThick]) {
                 color("Olive") {
-                    %text("PCB", halign="center", valign="center", font="Arial black");
+                    linear_extrude(FontThick) {
+                        text("PCB", halign="center", valign="center", font="Arial black");
+                    }
                 }
             }
         } // Fin PCB
