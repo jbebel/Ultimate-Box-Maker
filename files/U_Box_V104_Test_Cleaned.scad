@@ -471,7 +471,7 @@ module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
                 rotate([0, 0, i*Angle + 90 + Turn]) {
                     translate([0, TxtRadius, 0]) {
                         linear_extrude(height=FontThick) {
-                            text(Content[i], font=Font, size=Size,  valign="baseline", halign="center");
+                            text(Content[i], size=Size, font=Font, halign="center");
                         }
                     }
                 }
