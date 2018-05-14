@@ -433,14 +433,15 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
     Font: Font to use for text
     Size: Approximate Height of text in mm.
     Content: The text
-    HAlign: Text alignment. Defaults to "center"
+    HAlign: Text horizontal alignment. Defaults to "center". "left" and "right" available.
+    VAlign: Text vertical alignment. Defaults to "baseline". "top", "center", and "bottom" available.
 */
-module LText(OnOff,Tx,Ty,Font,Size,Content, HAlign="center") {
+module LText(OnOff,Tx,Ty,Font,Size,Content, HAlign="center", VAlign="baseline") {
     if (OnOff == 1) {
-        echo("LText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size, Content=Content, HAlign=HAlign);
+        echo("LText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size, Content=Content, HAlign=HAlign, VAlign=VAlign);
         translate([Tx, Ty, PanelThick]) {
             linear_extrude(height=FontThick) {
-                text(Content, size=Size, font=Font, halign=HAlign);
+                text(Content, size=Size, font=Font, halign=HAlign, valign=VAlign);
             }
         }
     }
@@ -514,7 +515,7 @@ module FPanL() {
     color(TextColor) {
         rotate([90, 0, 90]) {
 //                            <- Adding text from here ->
-            //(On/Off, Xpos, Ypos, "Font", Size, "Text", "HAlign")
+            //(On/Off, Xpos, Ypos, "Font", Size, "Text", "HAlign", "VAlign")
             LText(1, 20, 83, "Arial Black", 4, "Digital Screen", HAlign="left");
             LText(1, 120, 83, "Arial Black", 4, "Level", HAlign="left");
             LText(1, 20, 11, "Arial Black", 6, "  1     2      3", HAlign="left");
