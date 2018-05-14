@@ -329,7 +329,7 @@ module Feet() {
         /////////////// - PCB only visible in the preview mode - ///////////////
         translate([0, 0, FootHeight]) {
             %cube([PCBLength, PCBWidth, PCBThick]);
-            translate([PCBLength/2, PCBWidth/2, PCBThick + 0.5]) {
+            translate([PCBLength/2, PCBWidth/2, PCBThick]) {
                 color("Olive") {
                     %text("PCB", halign="center", valign="center", font="Arial black");
                 }
@@ -438,7 +438,7 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
 module LText(OnOff,Tx,Ty,Font,Size,Content, HAlign="center") {
     if (OnOff == 1) {
         echo("LText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size, Content=Content, HAlign=HAlign);
-        translate([Tx, Ty, PanelThick + .5]) {
+        translate([Tx, Ty, PanelThick]) {
             linear_extrude(height=FontThick) {
                 text(Content, size=Size, font=Font, halign=HAlign);
             }
@@ -466,7 +466,7 @@ module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
         echo("CText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size,
              TxtRadius=TxtRadius, Turn=Turn, Content=Content);
         Angle = -Angl / len(Content);
-        translate([Tx, Ty, PanelThick + .5]) {
+        translate([Tx, Ty, PanelThick]) {
             for (i= [0 : len(Content) - 1] ) {
                 rotate([0, 0, i*Angle + 90 + Turn]) {
                     translate([0, TxtRadius, 0]) {
@@ -512,17 +512,15 @@ module FPanL() {
     }
 
     color(TextColor) {
-        translate ([-.5, 0, 0]) {
-            rotate([90, 0, 90]) {
+        rotate([90, 0, 90]) {
 //                            <- Adding text from here ->
-                //(On/Off, Xpos, Ypos, "Font", Size, "Text", "HAlign")
-                LText(1, 20, 83, "Arial Black", 4, "Digital Screen", HAlign="left");
-                LText(1, 120, 83, "Arial Black", 4, "Level", HAlign="left");
-                LText(1, 20, 11, "Arial Black", 6, "  1     2      3", HAlign="left");
-                //(On/Off, Xpos, Ypos, "Font", Size, Diameter, Arc(Deg), Starting Angle(Deg),"Text")
-                CText(1, 93, 29, "Arial Black", 4, 10, 180, 0, "1 . 2 . 3 . 4 . 5 . 6");
+            //(On/Off, Xpos, Ypos, "Font", Size, "Text", "HAlign")
+            LText(1, 20, 83, "Arial Black", 4, "Digital Screen", HAlign="left");
+            LText(1, 120, 83, "Arial Black", 4, "Level", HAlign="left");
+            LText(1, 20, 11, "Arial Black", 6, "  1     2      3", HAlign="left");
+            //(On/Off, Xpos, Ypos, "Font", Size, Diameter, Arc(Deg), Starting Angle(Deg),"Text")
+            CText(1, 93, 29, "Arial Black", 4, 10, 180, 0, "1 . 2 . 3 . 4 . 5 . 6");
 //                            <- To here ->
-            }
         }
     }
 } // End FPanL
@@ -551,12 +549,10 @@ module BPanL() {
             }
 
             color(TextColor) {
-                translate ([-.5, 0, 0]) {
-                    rotate([90, 0, 90]) {
+                rotate([90, 0, 90]) {
         //                            <- Adding text from here ->
 
         //                            <- To here ->
-                    }
                 }
             }
         } // End 180 degree rotate
