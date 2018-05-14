@@ -30,6 +30,8 @@
 Thick = 2; //[2:5]
 // - Panel thickness
 PanelThick = 2;
+// - Font Thickness
+FontThick = 3;
 // - Diamètre Coin arrondi - Filet diameter
 Filet = 2; //[0.1:12]
 // - 0 for beveled, 1 for rounded
@@ -437,7 +439,7 @@ module LText(OnOff,Tx,Ty,Font,Size,Content, HAlign="center") {
     if (OnOff == 1) {
         echo("LText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size, Content=Content, HAlign=HAlign);
         translate([Tx, Ty, PanelThick + .5]) {
-            linear_extrude(height=0.5) {
+            linear_extrude(height=FontThick) {
                 text(Content, size=Size, font=Font, halign=HAlign);
             }
         }
@@ -468,7 +470,7 @@ module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
             for (i= [0 : len(Content) - 1] ) {
                 rotate([0, 0, i*Angle + 90 + Turn]) {
                     translate([0, TxtRadius, 0]) {
-                        linear_extrude(height=0.5) {
+                        linear_extrude(height=FontThick) {
                             text(Content[i], font=Font, size=Size,  valign="baseline", halign="center");
                         }
                     }
