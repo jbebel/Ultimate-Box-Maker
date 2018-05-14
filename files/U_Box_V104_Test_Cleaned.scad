@@ -25,8 +25,6 @@
 
 ////////// - Paramètres de la boite - Box parameters - /////////////
 
-
-
 /* [Box options] */
 // - Epaisseur - Wall thickness
 Thick = 2; //[2:5]
@@ -46,6 +44,7 @@ PCBFeet = 1; // [0:No, 1:Yes]
 Vent = 1; // [0:No, 1:Yes]
 // - Decoration-Holes width (in mm)
 Vent_width = 1.5;
+
 
 /* [PCB options] */
 // - Longueur PCB - PCB Length
@@ -70,7 +69,6 @@ TopPCBMargin = 84;
 ScrewHole = 2.2606;
 
 
-
 /* [PCB_Feet] */
 // - Heuteur pied - Feet height above box interior
 FootHeight = 8;
@@ -80,32 +78,29 @@ FootDia = 8;
 FootHole = 2.2606; // tap size for #4 coarse-thread
 FootFilet = Thick;
 
-
 // Foot centers are specified as distance from PCB top-left corner.
 // X is along the "length" axis, and Y is along the "width" axis.
 // - Foot 1 distance from top PCB edge
 Foot1X = 5;
 // - Foot 1 distance from left edge
 Foot1Y = 5;
-
 // - Foot 2 distance from top PCB edge
 Foot2X = 5;
 // - Foot 2 distance from left edge
 Foot2YFromEdge = 5;
 Foot2Y = PCBWidth - Foot2YFromEdge;
-
 // - Foot 3 distance from top PCB edge
 Foot3XFromEdge = 5;
 Foot3X = PCBLength - Foot3XFromEdge;
 // - Foot 3 distance from left edge
 Foot3Y = 5;
-
 // - Foot 4 distance from top PCB edge
 Foot4XFromEdge = 5;
 Foot4X = PCBLength - Foot4XFromEdge;
-// - Foot 3 distance from left edge
+// - Foot 4 distance from left edge
 Foot4YFromEdge = 5;
 Foot4Y = PCBWidth - Foot4YFromEdge;
+
 
 /* [STL element to export] */
 //Coque haut - Top shell
@@ -131,9 +126,6 @@ Dec_Thick = Vent ? Thick*2 : Thick;
 Dec_size = Vent ? Thick*2 : 0.8;
 // Resolution based on Round parameter
 Resolution = Round ? 100: 4;
-echo(Round=Round, Resolution=Resolution);
-
-
 
 // Calculate box dimensions from PCB.
 TopMargin = PCBThick + TopPCBMargin;
