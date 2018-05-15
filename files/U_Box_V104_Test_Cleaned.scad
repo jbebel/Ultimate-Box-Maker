@@ -122,10 +122,11 @@ Couleur1 = "Orange";
 Couleur2 = "OrangeRed";
 // - Text colors
 TextColor = "White";
-// Thick X 2 - making decorations thicker if it is a vent to make sure they go through shell
-Dec_Thick = Vent ? Thick*2 : Thick;
-// - Depth decoration
-Dec_size = Vent ? Thick*2 : 0.8;
+// - making decorations thicker if it is a vent to make sure they go through shell
+Dec_Thick = Vent ? Thick + Filet : Thick/2;
+// Separate vents with a square pillar by default.
+Dec_Spacing = Thick + Vent_width;
+
 // Resolution based on Round parameter
 Resolution = Round ? 100: 4;
 
@@ -238,20 +239,21 @@ module Coque() { //Coque - Shell
             } // End union for box and legs
 
             union() { // outbox sides decorations
-
-                for (i=[0 : Thick*2 : Length/4]) {
+                // X offset to center of first vent
+                DecOffset = Thick*2 + PanelThick + m + Dec_Spacing - Vent_width/2;
+                for (i=[0 : Dec_Spacing : Length/4]) {
                     // Ventilation holes part code submitted by Ettie - Thanks ;)
-                    translate([(10 + PanelThick - Thick) + i - Vent_width/2, -Dec_Thick + Dec_size, 1]) {
-                        cube([Vent_width, Dec_Thick, Height/4]);
+                    translate([DecOffset + i - Vent_width/2, -1, -1]) {
+                        cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
                     }
-                    translate([(Length - (10 + PanelThick - Thick)) - i - Vent_width/2, -Dec_Thick + Dec_size, 1]) {
-                        cube([Vent_width, Dec_Thick, Height/4]);
+                    translate([Length - DecOffset - i - Vent_width/2, -1, -1]) {
+                        cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
                     }
-                    translate([(Length - (10 + PanelThick - Thick)) - i - Vent_width/2, Width - Dec_size, 1]) {
-                        cube([Vent_width, Dec_Thick, Height/4]);
+                    translate([Length - DecOffset - i - Vent_width/2, Width - Dec_Thick, -1]) {
+                        cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
                     }
-                    translate([(10 + PanelThick - Thick) + i - Vent_width/2, Width - Dec_size, 1]) {
-                        cube([Vent_width, Dec_Thick, Height/4]);
+                    translate([DecOffset + i - Vent_width/2, Width - Dec_Thick, -1]) {
+                        cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
                     }
                 } // fin de for
             } //fin union decoration
