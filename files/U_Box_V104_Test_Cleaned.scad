@@ -32,7 +32,7 @@ Thick = 2; //[2:5]
 PanelThick = 2;
 // - Font Thickness
 FontThick = 0.5;
-// - Diamètre Coin arrondi - Filet diameter
+// - Filet Radius
 Filet = 2; //[0.1:12]
 // - 0 for beveled, 1 for rounded
 Round = 1; // [0:No, 1:Yes]
@@ -307,7 +307,7 @@ module foot(FootDia, FootHole, FootHeight) {
                     translate([FootDia/2 + Filet, Filet, 0]) {
                          minkowski() {
                              square(FootHeight);
-                             circle(Filet, $fn=Resolution);
+                             circle(r=Filet, $fn=Resolution);
                          }
                      }
                  }
@@ -417,10 +417,10 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
         echo("SquareHole:", Sx=Sx - CutoutMargin/2, Sy=Sy - CutoutMargin/2,
              Sl=Sl + CutoutMargin, Sw=Sw + CutoutMargin, Filet=Filet);
         minkowski() {
-            translate([Sx + Filet/2 - CutoutMargin/2, Sy + Filet/2 - CutoutMargin/2, -PanelThick/2]) {
-                cube([Sl + CutoutMargin - Filet, Sw + CutoutMargin - Filet, PanelThick]);
+            translate([Sx + Filet - CutoutMargin/2, Sy + Filet - CutoutMargin/2, -PanelThick/2]) {
+                cube([Sl + CutoutMargin - Filet*2, Sw + CutoutMargin - Filet*2, PanelThick]);
             }
-            cylinder(PanelThick, d=Filet, $fn=Resolution);
+            cylinder(PanelThick, r=Filet, $fn=Resolution);
         }
     }
 }
