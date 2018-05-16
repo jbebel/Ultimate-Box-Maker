@@ -163,9 +163,8 @@ module RoundBox($a=Length, $b=Width, $c=Height) { // Cube bords arrondis
     rotate([90, 0, 90]) {
         linear_extrude(height=$a) {
             translate([Filet, Filet, 0]) {
-                minkowski() {
+                offset(r=Filet, $fn=Resolution) {
                     square([$b - 2*Filet, $c - 2*Filet]);
-                    circle(r=Filet, $fn=Resolution);
                 }
             }
         }
@@ -307,9 +306,8 @@ module foot(FootDia, FootHole, FootHeight) {
                 cylinder(FootHeight, d=(FootDia + Filet*2), $fn=100);
                 rotate_extrude($fn=100) {
                     translate([FootDia/2 + Filet, Filet, 0]) {
-                         minkowski() {
+                         offset(r=Filet, $fn=Resolution) {
                              square(FootHeight);
-                             circle(r=Filet, $fn=Resolution);
                          }
                      }
                  }
@@ -374,9 +372,8 @@ module Panel() {
     rotate([90, 0, 90]) {
         linear_extrude(height=PanelThick) {
             translate([Filet, Filet, 0]) {
-                minkowski() {
+                offset(r=Filet, $fn=Resolution) {
                     square([PanelWidth - Filet*2, PanelHeight - Filet*2]);
-                    circle(r=Filet, $fn=Resolution);
                 }
             }
         }
@@ -422,9 +419,8 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
              Sl=Sl + CutoutMargin, Sw=Sw + CutoutMargin, Filet=Filet);
         translate([Sx + Filet - CutoutMargin/2, Sy + Filet - CutoutMargin/2, -PanelThick/2]) {
             linear_extrude(height=PanelThick*2) {
-                minkowski() {
+                offset(r=Filet, $fn=Resolution) {
                     square([Sl + CutoutMargin - Filet*2, Sw + CutoutMargin - Filet*2]);
-                    circle(r=Filet, $fn=Resolution);
                 }
             }
         }
