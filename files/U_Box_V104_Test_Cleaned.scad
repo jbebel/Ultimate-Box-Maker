@@ -123,7 +123,8 @@ Couleur2 = "OrangeRed";
 // - Text colors
 TextColor = "White";
 // - making decorations thicker if it is a vent to make sure they go through shell
-Dec_Thick = Vent ? Thick + Filet : Thick/2;
+// Add a small number to Thick in case Filet is 0.
+Dec_Thick = Vent ? Thick*1.001 + Filet : Thick/2;
 // Separate vents with a square pillar by default.
 Dec_Spacing = Thick + Vent_width;
 
