@@ -574,7 +574,7 @@ if (TShell == 1) {
     // Coque haut - Top Shell
     color(Couleur1) {
         translate([0, Width, Height + 0.2]) {
-            rotate([0, 180, 180]) {
+            rotate([180, 0, 0]) {
                 Coque();
             }
         }
