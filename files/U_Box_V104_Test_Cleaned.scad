@@ -160,11 +160,13 @@ LeftEdgeOfBoardWRTBPanel = RightEdgeMargin - (m/2);
     c: The height of the box. Defaults to the "Height" parameter.   
 */
 module RoundBox($a=Length, $b=Width, $c=Height) { // Cube bords arrondis
-    translate([0, Filet, Filet]) {
-        minkowski() {
-            cube([$a - Length/2, $b - 2*Filet, $c - 2*Filet]);
-            rotate([0, 90, 0]) {
-                cylinder(Length/2, r=Filet, $fn=Resolution);
+    rotate([90, 0, 90]) {
+        linear_extrude(height=$a) {
+            translate([Filet, Filet, 0]) {
+                minkowski() {
+                    square([$b - 2*Filet, $c - 2*Filet]);
+                    circle(r=Filet, $fn=Resolution);
+                }
             }
         }
     }
@@ -333,7 +335,7 @@ module Feet() {
             cube([PCBLength, PCBWidth, PCBThick]);
             translate([PCBLength/2, PCBWidth/2, PCBThick]) {
                 color("Olive") {
-                    linear_extrude(FontThick) {
+                    linear_extrude(height=FontThick) {
                         text("PCB", font="Arial black", halign="center", valign="center");
                     }
                 }
@@ -369,11 +371,13 @@ module Feet() {
 */
 module Panel() {
     echo("Panel:", Thick=PanelThick, PanelWidth=PanelWidth, PanelHeight=PanelHeight);
-    minkowski() {
-        cube([PanelThick/2, PanelWidth - Filet*2, PanelHeight - Filet*2]);
-        translate([0, Filet, Filet]) {
-            rotate([0, 90, 0]) {
-                cylinder(PanelThick/2, r=Filet, $fn=Resolution);
+    rotate([90, 0, 90]) {
+        linear_extrude(height=PanelThick) {
+            translate([Filet, Filet, 0]) {
+                minkowski() {
+                    square([PanelWidth - Filet*2, PanelHeight - Filet*2]);
+                    circle(r=Filet, $fn=Resolution);
+                }
             }
         }
     }
@@ -416,11 +420,13 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
     if (OnOff == 1) {
         echo("SquareHole:", Sx=Sx - CutoutMargin/2, Sy=Sy - CutoutMargin/2,
              Sl=Sl + CutoutMargin, Sw=Sw + CutoutMargin, Filet=Filet);
-        minkowski() {
-            translate([Sx + Filet - CutoutMargin/2, Sy + Filet - CutoutMargin/2, -PanelThick/2]) {
-                cube([Sl + CutoutMargin - Filet*2, Sw + CutoutMargin - Filet*2, PanelThick]);
+        translate([Sx + Filet - CutoutMargin/2, Sy + Filet - CutoutMargin/2, -PanelThick/2]) {
+            linear_extrude(height=PanelThick*2) {
+                minkowski() {
+                    square([Sl + CutoutMargin - Filet*2, Sw + CutoutMargin - Filet*2]);
+                    circle(r=Filet, $fn=Resolution);
+                }
             }
-            cylinder(PanelThick, r=Filet, $fn=Resolution);
         }
     }
 }
