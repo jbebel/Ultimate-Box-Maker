@@ -40,6 +40,8 @@ Round = 1; // [0:No, 1:Yes]
 PanelGap = 0.9;
 // - Printer margin around interior cutouts
 CutoutMargin = 0.6;
+// - Printer margin around exterior edges
+OuterMargin = 0.2;
 // Pieds PCB - PCB feet (x4)
 PCBFeet = 1; // [0:No, 1:Yes]
 // - Decorations to ventilation holes
@@ -229,13 +231,13 @@ module Coque() { //Coque - Shell
                             }
                         }
                     }
-                    translate([0, Thick*2 + Filet, Height/2 - 57]) {
-                        rotate([45, 0, 0]) {
-                            cube([Length, 40, 40]);
+                    translate([0, Thick*2, Height/2 - ScrewHole]) {
+                        rotate([180 + 45, 0, 0]) {
+                            cube([Length, 5*ScrewHole, 3*ScrewHole]);
                         }
                     }
                     translate([0, 0, Height/2]) {
-                        cube([Length, Thick + 0.16, 10]);
+                        cube([Length, Thick + OuterMargin, 4*ScrewHole]);
                     }
                 } //Fin fixation box legs
             } // End union for box and legs
