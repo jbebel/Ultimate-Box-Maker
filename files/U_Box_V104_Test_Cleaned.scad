@@ -264,24 +264,24 @@ module Coque() { //Coque - Shell
 
         union() { //sides holes
             $fn = 100;
-            translate([MountInset, 20, Height/2 + 2*ScrewHole]) {
-                rotate([90, 0, 0]) {
-                    cylinder(20, d=ScrewHole);
+            translate([MountInset, 0, Height/2 + 2*ScrewHole]) {
+                rotate([270, 0, 0]) {
+                    cylinder(Thick*3, d=ScrewHole);
                 }
             }
-            translate([Length - MountInset, 20, Height/2 + 2*ScrewHole]) {
-                rotate([90, 0, 0]) {
-                    cylinder(20, d=ScrewHole);
+            translate([Length - MountInset, 0, Height/2 + 2*ScrewHole]) {
+                rotate([270, 0, 0]) {
+                    cylinder(Thick*3, d=ScrewHole);
                 }
             }
-            translate([MountInset, Width + 5, Height/2 - 2*ScrewHole]) {
+            translate([MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
                 rotate([90, 0, 0]) {
-                    cylinder(20, d=ScrewHole);
+                    cylinder(Thick*3, d=ScrewHole);
                 }
             }
-            translate([Length - MountInset, Width + 5, Height/2 - 2*ScrewHole]) {
+            translate([Length - MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
                 rotate([90, 0, 0]) {
-                    cylinder(20, d=ScrewHole);
+                    cylinder(Thick*3, d=ScrewHole);
                 }
             }
         } //fin de sides holes
