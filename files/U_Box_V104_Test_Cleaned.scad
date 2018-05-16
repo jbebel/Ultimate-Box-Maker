@@ -473,7 +473,7 @@ module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
     if (OnOff == 1) {
         echo("CText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size,
              TxtRadius=TxtRadius, Turn=Turn, Content=Content);
-        Angle = -Angl / len(Content);
+        Angle = -Angl / (len(Content) - 1);
         translate([Tx, Ty, PanelThick]) {
             for (i= [0 : len(Content) - 1] ) {
                 rotate([0, 0, i*Angle + 90 + Turn]) {
@@ -527,7 +527,7 @@ module FPanL() {
             LText(1, 120, 83, "Arial Black", 4, "Level", HAlign="left");
             LText(1, 20, 11, "Arial Black", 6, "  1     2      3", HAlign="left");
             //(On/Off, Xpos, Ypos, "Font", Size, Diameter, Arc(Deg), Starting Angle(Deg),"Text")
-            CText(1, 93, 29, "Arial Black", 4, 10, 180, 0, "1 . 2 . 3 . 4 . 5 . 6");
+            CText(1, 93, 29, "Arial Black", 4, 10, 180, 0, ["1", "." , "3", "." , "5", "." , "7", "." , "9", "." , "11"]);
 //                            <- To here ->
         }
     }
