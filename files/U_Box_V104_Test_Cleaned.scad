@@ -195,15 +195,13 @@ module Coque() { //Coque - Shell
                                 }
                             } //Fin diff Coque
                             difference() { //largeur Rails
-                                translate([Thick + PanelThick + m, Thick, Thick]) { // Rails
+                                translate([Thick + PanelThick + m, Thick/2, Thick/2]) { // Rails
                                      RoundBox($a=(Length - ((Thick + PanelThick + m)*2)),
-                                              $b=(Width - Thick*2),
-                                              $c=(Height - Thick*2));
+                                              $b=(Width - Thick),
+                                              $c=(Height - Thick));
                                 } //fin Rails
-                                translate([Thick*2 + PanelThick + m, Thick, Thick]) {
-                                     RoundBox($a=(Length - ((Thick*2 + PanelThick + m) * 2)),
-                                              $b=(Width - Thick*2),
-                                              $c=(Height - Thick*2));
+                                translate([Thick*2 + PanelThick + m, 0, 0]) {
+                                     RoundBox($a=(Length - ((Thick*2 + PanelThick + m) * 2)));
                                 }
                             } //Fin largeur Rails
                         } //Fin union
