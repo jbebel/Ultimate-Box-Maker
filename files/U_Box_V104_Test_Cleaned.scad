@@ -137,6 +137,8 @@ Length = PCBLength + FrontEdgeMargin + BackEdgeMargin + ((Thick + PanelThick + m
 Width = PCBWidth + LeftEdgeMargin + RightEdgeMargin + Thick*2;
 Height = FootHeight + TopMargin + Thick*2;
 echo("Box: ", Length=Length, Width=Width, Height=Height);
+// X position inset of mounting holes and tabs
+MountInset = Thick*3 + PanelThick + m + ScrewHole*4;
 
 // Calculate panel dimensions from box dimensions.
 PanelWidth = Width - Thick*2 - m;
@@ -216,14 +218,14 @@ module Coque() { //Coque - Shell
 
                 difference() { // wall fixation box legs
                     union() {
-                        translate([Thick*5 + PanelThick + 5, Thick*2, Height/2]) {
-                            rotate([90, 0, 0]) {
-                                cylinder(Thick, d=16, $fn=6);
+                        translate([MountInset, Thick, Height/2]) {
+                            rotate([270, 0, 0]) {
+                                cylinder(Thick, r=4*ScrewHole, $fn=6);
                             }
                         }
-                        translate([Length - (Thick*5 + PanelThick + 5), Thick*2, Height/2]) {
-                            rotate([90, 0, 0]) {
-                                cylinder(Thick, d=16, $fn=6);
+                        translate([Length - MountInset, Thick, Height/2]) {
+                            rotate([270, 0, 0]) {
+                                cylinder(Thick, r=4*ScrewHole, $fn=6);
                             }
                         }
                     }
@@ -262,22 +264,22 @@ module Coque() { //Coque - Shell
 
         union() { //sides holes
             $fn = 100;
-            translate([Thick*5 + PanelThick + 5, 20, Height/2 + 4]) {
+            translate([MountInset, 20, Height/2 + 2*ScrewHole]) {
                 rotate([90, 0, 0]) {
                     cylinder(20, d=ScrewHole);
                 }
             }
-            translate([Length - (Thick*5 + PanelThick + 5), 20, Height/2 + 4]) {
+            translate([Length - MountInset, 20, Height/2 + 2*ScrewHole]) {
                 rotate([90, 0, 0]) {
                     cylinder(20, d=ScrewHole);
                 }
             }
-            translate([Thick*5 + PanelThick + 5, Width + 5, Height/2 - 4]) {
+            translate([MountInset, Width + 5, Height/2 - 2*ScrewHole]) {
                 rotate([90, 0, 0]) {
                     cylinder(20, d=ScrewHole);
                 }
             }
-            translate([Length - (Thick*5 + PanelThick + 5), Width + 5, Height/2 - 4]) {
+            translate([Length - MountInset, Width + 5, Height/2 - 2*ScrewHole]) {
                 rotate([90, 0, 0]) {
                     cylinder(20, d=ScrewHole);
                 }
