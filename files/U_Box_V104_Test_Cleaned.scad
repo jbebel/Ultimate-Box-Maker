@@ -37,7 +37,7 @@ Filet = 2; //[0.1:12]
 // - 0 for beveled, 1 for rounded
 Round = 1; // [0:No, 1:Yes]
 // - Tolérance - Tolerance (Panel/rails gap)
-m = 0.9;
+PanelGap = 0.9;
 // - Printer margin around interior cutouts
 CutoutMargin = 0.6;
 // Pieds PCB - PCB feet (x4)
@@ -133,23 +133,23 @@ Resolution = Round ? 100: 4;
 
 // Calculate box dimensions from PCB.
 TopMargin = PCBThick + TopPCBMargin;
-Length = PCBLength + FrontEdgeMargin + BackEdgeMargin + ((Thick + PanelThick + m)*2);
+Length = PCBLength + FrontEdgeMargin + BackEdgeMargin + ((Thick + PanelThick + PanelGap)*2);
 Width = PCBWidth + LeftEdgeMargin + RightEdgeMargin + Thick*2;
 Height = FootHeight + TopMargin + Thick*2;
 echo("Box: ", Length=Length, Width=Width, Height=Height);
 // X position inset of mounting holes and tabs
-MountInset = Thick*3 + PanelThick + m + ScrewHole*4;
+MountInset = Thick*3 + PanelThick + PanelGap + ScrewHole*4;
 
 // Calculate panel dimensions from box dimensions.
-PanelWidth = Width - Thick*2 - m;
-PanelHeight = Height - Thick*2 - m;
+PanelWidth = Width - Thick*2 - PanelGap;
+PanelHeight = Height - Thick*2 - PanelGap;
 
 
 // Calculate board-relative positions with respect to the panel, for
 // convenience in placing panel elements.
-TopOfBoardWRTPanel = FootHeight + PCBThick - (m/2);
-LeftEdgeOfBoardWRTFPanel = LeftEdgeMargin - (m/2);
-LeftEdgeOfBoardWRTBPanel = RightEdgeMargin - (m/2);
+TopOfBoardWRTPanel = FootHeight + PCBThick - (PanelGap/2);
+LeftEdgeOfBoardWRTFPanel = LeftEdgeMargin - (PanelGap/2);
+LeftEdgeOfBoardWRTBPanel = RightEdgeMargin - (PanelGap/2);
 
 
 /* Generic rounded box
@@ -197,13 +197,13 @@ module Coque() { //Coque - Shell
                                 }
                             } //Fin diff Coque
                             difference() { //largeur Rails
-                                translate([Thick + PanelThick + m, Thick/2, Thick/2]) { // Rails
-                                     RoundBox($a=(Length - ((Thick + PanelThick + m)*2)),
+                                translate([Thick + PanelThick + PanelGap, Thick/2, Thick/2]) { // Rails
+                                     RoundBox($a=(Length - ((Thick + PanelThick + PanelGap)*2)),
                                               $b=(Width - Thick),
                                               $c=(Height - Thick));
                                 } //fin Rails
-                                translate([Thick*2 + PanelThick + m, 0, 0]) {
-                                     RoundBox($a=(Length - ((Thick*2 + PanelThick + m) * 2)));
+                                translate([Thick*2 + PanelThick + PanelGap, 0, 0]) {
+                                     RoundBox($a=(Length - ((Thick*2 + PanelThick + PanelGap) * 2)));
                                 }
                             } //Fin largeur Rails
                         } //Fin union
@@ -242,7 +242,7 @@ module Coque() { //Coque - Shell
 
             union() { // outbox sides decorations
                 // X offset to center of first vent
-                DecOffset = Thick*2 + PanelThick + m + Dec_Spacing - Vent_width/2;
+                DecOffset = Thick*2 + PanelThick + PanelGap + Dec_Spacing - Vent_width/2;
                 for (i=[0 : Dec_Spacing : Length/4]) {
                     // Ventilation holes part code submitted by Ettie - Thanks ;)
                     translate([DecOffset + i - Vent_width/2, -1, -1]) {
@@ -328,7 +328,7 @@ module foot(FootDia, FootHole, FootHeight) {
     No arguments are used, but parameters provide the PCB and foot dimensions.
 */
 module Feet() {
-    translate([BackEdgeMargin + Thick + PanelThick + m, LeftEdgeMargin + Thick, Thick]) {
+    translate([BackEdgeMargin + Thick + PanelThick + PanelGap, LeftEdgeMargin + Thick, Thick]) {
         /////////////// - PCB only visible in the preview mode - ///////////////
         %translate([0, 0, FootHeight]) {
             cube([PCBLength, PCBWidth, PCBThick]);
@@ -594,14 +594,14 @@ if (BShell == 1) {
 
 // Panneau avant - Front panel
 if (FPanL == 1) {
-    translate([Length - (Thick + PanelThick + m/2), Thick + m/2, Thick + m/2]) {
+    translate([Length - (Thick + PanelThick + PanelGap/2), Thick + PanelGap/2, Thick + PanelGap/2]) {
         FPanL();
     }
 }
 
 //Panneau arrière - Back panel
 if (BPanL == 1) {
-    translate([Thick + m/2, Thick + m/2, Thick + m/2]) {
+    translate([Thick + PanelGap/2, Thick + PanelGap/2, Thick + PanelGap/2]) {
         BPanL();
     }
 }
