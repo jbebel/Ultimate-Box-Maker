@@ -129,6 +129,8 @@ TextColor = "White";
 Dec_Thick = Vent ? Thick*1.001 + Filet : Thick/2;
 // Separate vents with a square pillar by default.
 Dec_Spacing = Thick + Vent_width;
+// X offset to center of first vent
+Dec_Offset = Thick*2 + PanelThick + PanelGap + Dec_Spacing - Vent_width/2;
 
 // Resolution based on Round parameter
 Resolution = Round ? 100: 4;
@@ -207,26 +209,35 @@ module MainBox() {
 }
 
 
+/* Decoration: a single box decoration
+*/
+module decoration() {
+    translate([-Vent_width/2, -Thick, -Thick]) {
+        cube([Vent_width, Dec_Thick + Thick, Height/4 + Thick]);
+    }
+}
+
+
 /*  Decorations: decorations module
 
     This module produces the box vents or decorations.
 */
 module Decorations() {
-    union() {
-        // X offset to center of first vent
-        DecOffset = Thick*2 + PanelThick + PanelGap + Dec_Spacing - Vent_width/2;
-        for (i=[0 : Dec_Spacing : Length/4]) {
-            translate([DecOffset + i - Vent_width/2, -1, -1]) {
-                cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
+    for (i=[0 : Dec_Spacing : Length/4]) {
+        translate([Dec_Offset + i, 0, 0]) {
+            decoration();
+        }
+        translate([Length - Dec_Offset - i, 0, 0]) {
+            decoration();
+        }
+        translate([Length - Dec_Offset - i, Width, 0]) {
+            rotate([0, 0, 180]) {
+                decoration();
             }
-            translate([Length - DecOffset - i - Vent_width/2, -1, -1]) {
-                cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
-            }
-            translate([Length - DecOffset - i - Vent_width/2, Width - Dec_Thick, -1]) {
-                cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
-            }
-            translate([DecOffset + i - Vent_width/2, Width - Dec_Thick, -1]) {
-                cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
+        }
+        translate([Dec_Offset + i, Width, 0]) {
+            rotate([0, 0, 180]) {
+                decoration();
             }
         }
     }
