@@ -340,15 +340,14 @@ module Coque() { //Coque - Shell
     FootHeight: Height of the foot above the box interior
 */
 module foot(FootDia, FootHole, FootHeight) {
-    Filet = FootFilet;
     color(Couleur1) {
         rotate_extrude($fn=100) {
             difference() {
                 translate([FootHole/2, 0, 0]) {
-                    square([(FootDia - FootHole)/2 + Filet, FootHeight]);
+                    square([(FootDia - FootHole)/2 + FootFilet, FootHeight]);
                 }
-                translate([FootDia/2 + Filet, Filet, 0]) {
-                    offset(r=Filet, $fn=Resolution) {
+                translate([FootDia/2 + FootFilet, FootFilet, 0]) {
+                    offset(r=FootFilet, $fn=Resolution) {
                         square(FootHeight);
                     }
                 }
