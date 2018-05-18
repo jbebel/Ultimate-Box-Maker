@@ -209,11 +209,28 @@ module MainBox() {
 }
 
 
-/* Decoration: a single box decoration
+/*  decoration: a single box decoration
 */
 module decoration() {
     translate([-Vent_width/2, -Thick, -Thick]) {
         cube([Vent_width, Dec_Thick + Thick, Height/4 + Thick]);
+    }
+}
+
+
+/* LeftDecorations: left decorations module
+
+    Produces the decorations/vents for just the left side of the box.
+    These can be rotated and translated for the right side.
+*/
+module LeftDecorations() {
+    for (i=[0 : Dec_Spacing : Length/4]) {
+        translate([Dec_Offset + i, 0, 0]) {
+            decoration();
+        }
+        translate([Length - Dec_Offset - i, 0, 0]) {
+            decoration();
+        }
     }
 }
 
@@ -223,22 +240,11 @@ module decoration() {
     This module produces the box vents or decorations.
 */
 module Decorations() {
-    for (i=[0 : Dec_Spacing : Length/4]) {
-        translate([Dec_Offset + i, 0, 0]) {
-            decoration();
-        }
-        translate([Length - Dec_Offset - i, 0, 0]) {
-            decoration();
-        }
-        translate([Length - Dec_Offset - i, Width, 0]) {
-            rotate([0, 0, 180]) {
-                decoration();
-            }
-        }
-        translate([Dec_Offset + i, Width, 0]) {
-            rotate([0, 0, 180]) {
-                decoration();
-            }
+    LeftDecorations();
+    // Mirror for the right side decorations
+    translate([0, Width, 0]) {
+        mirror([0, 1, 0]) {
+            LeftDecorations();
         }
     }
 }
