@@ -164,7 +164,7 @@ LeftEdgeOfBoardWRTBPanel = RightEdgeMargin - (PanelGap/2);
     b: The width of the box. Defaults to the "Width" parameter.
     c: The height of the box. Defaults to the "Height" parameter.   
 */
-module RoundBox($a=Length, $b=Width, $c=Height) { // Cube bords arrondis
+module RoundBox($a=Length, $b=Width, $c=Height) {
     rotate([90, 0, 90]) {
         linear_extrude(height=$a) {
             translate([Filet, Filet, 0]) {
@@ -174,7 +174,132 @@ module RoundBox($a=Length, $b=Width, $c=Height) { // Cube bords arrondis
             }
         }
     }
-} // End of RoundBox Module
+}
+
+
+/*  MainBox: Main box module
+
+    This module produces the simple main box half. No feet, legs, vents or fixation
+    is applied here.
+*/
+module MainBox() {
+    difference() {
+        union() {
+            difference() { // Makes a hollow box with walls of Thick thickness.
+                RoundBox();
+                translate([Thick, Thick, Thick]) {
+                    RoundBox($a=(Length - Thick*2),
+                             $b=(Width - Thick*2),
+                             $c=(Height - Thick*2));
+                }
+            }
+            difference() { // Makes interior backing for panel
+                translate([Thick + PanelThick + PanelGap, Thick/2, Thick/2]) { // Rails
+                     RoundBox($a=(Length - ((Thick + PanelThick + PanelGap)*2)),
+                              $b=(Width - Thick),
+                              $c=(Height - Thick));
+                }
+                translate([Thick*2 + PanelThick + PanelGap, 0, 0]) {
+                     RoundBox($a=(Length - ((Thick*2 + PanelThick + PanelGap) * 2)));
+                }
+            }
+        } // /union
+        translate([-Thick, -Thick, Height/2]) { // Remove the top half
+            cube([Length + Thick*2, Width + Thick*2, Height]);
+        }
+        translate([-Thick, Thick*2, Thick*2]) { // Remove the center for panel visibility.
+            RoundBox($a=(Length + Thick*2), $b=(Width - Thick*4), $c=(Height - Thick*4));
+        }
+    }
+}
+
+
+/*  Decorations: decorations module
+
+    This module produces the box vents or decorations.
+*/
+module Decorations() {
+    union() {
+        // X offset to center of first vent
+        DecOffset = Thick*2 + PanelThick + PanelGap + Dec_Spacing - Vent_width/2;
+        for (i=[0 : Dec_Spacing : Length/4]) {
+            translate([DecOffset + i - Vent_width/2, -1, -1]) {
+                cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
+            }
+            translate([Length - DecOffset - i - Vent_width/2, -1, -1]) {
+                cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
+            }
+            translate([Length - DecOffset - i - Vent_width/2, Width - Dec_Thick, -1]) {
+                cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
+            }
+            translate([DecOffset + i - Vent_width/2, Width - Dec_Thick, -1]) {
+                cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
+            }
+        }
+    }
+}
+
+
+/*  Legs: legs module
+
+    This module produces the wall fixation box legs.
+*/
+module Legs() {
+    difference() {
+        union() {
+            translate([MountInset, Thick, Height/2]) {
+                rotate([270, 0, 0]) {
+                    cylinder(Thick, r=4*ScrewHole, $fn=6);
+                }
+            }
+            translate([Length - MountInset, Thick, Height/2]) {
+                rotate([270, 0, 0]) {
+                    cylinder(Thick, r=4*ScrewHole, $fn=6);
+                }
+            }
+        }
+        translate([0, Thick*2, Height/2 - ScrewHole]) {
+            rotate([180 + 45, 0, 0]) {
+                cube([Length, 5*ScrewHole, 3*ScrewHole]);
+            }
+        }
+        translate([0, 0, Height/2]) {
+            cube([Length, Thick + OuterMargin, 4*ScrewHole]);
+        }
+    }
+}
+
+
+/*  Holes: holes module
+
+    This module produces the holes necessary in the box fixation tabs and in the wall
+    of the box for the corresponding tabs to affix to.
+*/
+module Holes() {
+    union() {
+        $fn = 100;
+        translate([MountInset, 0, Height/2 + 2*ScrewHole]) {
+            rotate([270, 0, 0]) {
+                cylinder(Thick*3, d=ScrewHole);
+            }
+        }
+        translate([Length - MountInset, 0, Height/2 + 2*ScrewHole]) {
+            rotate([270, 0, 0]) {
+                cylinder(Thick*3, d=ScrewHole);
+            }
+        }
+        translate([MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
+            rotate([90, 0, 0]) {
+                cylinder(Thick*3, d=ScrewHole);
+            }
+        }
+        translate([Length - MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
+            rotate([90, 0, 0]) {
+                cylinder(Thick*3, d=ScrewHole);
+            }
+        }
+    }
+}
 
 
 /*  Coque: Shell module
@@ -185,111 +310,14 @@ module RoundBox($a=Length, $b=Width, $c=Height) { // Cube bords arrondis
 */
 module Coque() { //Coque - Shell
     difference() {
-        difference() { //sides decoration
-            union() {
-                difference() { //soustraction de la forme centrale - Substraction Fileted box
-                    difference() { //soustraction cube median - Median cube slicer
-                        union() { //union
-                            difference() { //Coque
-                                RoundBox();
-                                translate([Thick, Thick, Thick]) {
-                                    RoundBox($a=(Length - Thick*2),
-                                             $b=(Width - Thick*2),
-                                             $c=(Height - Thick*2));
-                                }
-                            } //Fin diff Coque
-                            difference() { //largeur Rails
-                                translate([Thick + PanelThick + PanelGap, Thick/2, Thick/2]) { // Rails
-                                     RoundBox($a=(Length - ((Thick + PanelThick + PanelGap)*2)),
-                                              $b=(Width - Thick),
-                                              $c=(Height - Thick));
-                                } //fin Rails
-                                translate([Thick*2 + PanelThick + PanelGap, 0, 0]) {
-                                     RoundBox($a=(Length - ((Thick*2 + PanelThick + PanelGap) * 2)));
-                                }
-                            } //Fin largeur Rails
-                        } //Fin union
-                        translate([-Thick, -Thick, Height/2]) { // Cube à soustraire
-                            cube([Length + Thick*2, Width + Thick*2, Height]);
-                        }
-                    } //fin soustraction cube median - End Median cube slicer
-                    translate([-Thick, Thick*2, Thick*2]) { // Forme de soustraction centrale
-                        RoundBox($a=(Length + Thick*2), $b=(Width - Thick*4), $c=(Height - Thick*4));
-                    }
-                } // End difference for main box
-
-                difference() { // wall fixation box legs
-                    union() {
-                        translate([MountInset, Thick, Height/2]) {
-                            rotate([270, 0, 0]) {
-                                cylinder(Thick, r=4*ScrewHole, $fn=6);
-                            }
-                        }
-                        translate([Length - MountInset, Thick, Height/2]) {
-                            rotate([270, 0, 0]) {
-                                cylinder(Thick, r=4*ScrewHole, $fn=6);
-                            }
-                        }
-                    }
-                    translate([0, Thick*2, Height/2 - ScrewHole]) {
-                        rotate([180 + 45, 0, 0]) {
-                            cube([Length, 5*ScrewHole, 3*ScrewHole]);
-                        }
-                    }
-                    translate([0, 0, Height/2]) {
-                        cube([Length, Thick + OuterMargin, 4*ScrewHole]);
-                    }
-                } //Fin fixation box legs
-            } // End union for box and legs
-
-            union() { // outbox sides decorations
-                // X offset to center of first vent
-                DecOffset = Thick*2 + PanelThick + PanelGap + Dec_Spacing - Vent_width/2;
-                for (i=[0 : Dec_Spacing : Length/4]) {
-                    // Ventilation holes part code submitted by Ettie - Thanks ;)
-                    translate([DecOffset + i - Vent_width/2, -1, -1]) {
-                        cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
-                    }
-                    translate([Length - DecOffset - i - Vent_width/2, -1, -1]) {
-                        cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
-                    }
-                    translate([Length - DecOffset - i - Vent_width/2, Width - Dec_Thick, -1]) {
-                        cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
-                    }
-                    translate([DecOffset + i - Vent_width/2, Width - Dec_Thick, -1]) {
-                        cube([Vent_width, Dec_Thick + 1, Height/4 + 1]);
-                    }
-                } // fin de for
-            } //fin union decoration
-
-        } //fin difference decoration
-
-        union() { //sides holes
-            $fn = 100;
-            translate([MountInset, 0, Height/2 + 2*ScrewHole]) {
-                rotate([270, 0, 0]) {
-                    cylinder(Thick*3, d=ScrewHole);
-                }
-            }
-            translate([Length - MountInset, 0, Height/2 + 2*ScrewHole]) {
-                rotate([270, 0, 0]) {
-                    cylinder(Thick*3, d=ScrewHole);
-                }
-            }
-            translate([MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
-                rotate([90, 0, 0]) {
-                    cylinder(Thick*3, d=ScrewHole);
-                }
-            }
-            translate([Length - MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
-                rotate([90, 0, 0]) {
-                    cylinder(Thick*3, d=ScrewHole);
-                }
-            }
-        } //fin de sides holes
-
-    } //fin de difference holes
-} // fin coque
+        union() {
+            MainBox();
+            Legs();
+        }
+        Decorations();
+        Holes();
+    }
+}
 
 
 /*  foot module
