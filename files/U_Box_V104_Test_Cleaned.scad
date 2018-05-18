@@ -160,16 +160,17 @@ LeftEdgeOfBoardWRTBPanel = RightEdgeMargin - (PanelGap/2);
     Filet and Resolution parameters.
     
     Arguments:
-    a: The length of the box. Defaults to "Length" parameter.
-    b: The width of the box. Defaults to the "Width" parameter.
-    c: The height of the box. Defaults to the "Height" parameter.   
+    xshrink: the amount to reduce the length on one end compared to the full length
+    yzshrink: the amount to reduce the width or height on one edge compared to the full box  
 */
-module RoundBox($a=Length, $b=Width, $c=Height) {
-    rotate([90, 0, 90]) {
-        linear_extrude(height=$a) {
-            translate([Filet, Filet, 0]) {
-                offset(r=Filet, $fn=Resolution) {
-                    square([$b - 2*Filet, $c - 2*Filet]);
+module RoundBox(xshrink=0, yzshrink=0) {
+    translate([xshrink, yzshrink, yzshrink]) {
+        rotate([90, 0, 90]) {
+            linear_extrude(height=Length - xshrink*2) {
+                translate([Filet, Filet, 0]) {
+                    offset(r=Filet, $fn=Resolution) {
+                        square([Width - 2*yzshrink - 2*Filet, Height - 2*yzshrink - 2*Filet]);
+                    }
                 }
             }
         }
@@ -185,31 +186,23 @@ module RoundBox($a=Length, $b=Width, $c=Height) {
 module MainBox() {
     difference() {
         union() {
-            difference() { // Makes a hollow box with walls of Thick thickness.
+            // Makes a hollow box with walls of Thick thickness.
+            difference() {
                 RoundBox();
-                translate([Thick, Thick, Thick]) {
-                    RoundBox($a=(Length - Thick*2),
-                             $b=(Width - Thick*2),
-                             $c=(Height - Thick*2));
-                }
+                RoundBox(xshrink=Thick, yzshrink=Thick);
             }
-            difference() { // Makes interior backing for panel
-                translate([Thick + PanelThick + PanelGap, Thick/2, Thick/2]) { // Rails
-                     RoundBox($a=(Length - ((Thick + PanelThick + PanelGap)*2)),
-                              $b=(Width - Thick),
-                              $c=(Height - Thick));
-                }
-                translate([Thick*2 + PanelThick + PanelGap, 0, 0]) {
-                     RoundBox($a=(Length - ((Thick*2 + PanelThick + PanelGap) * 2)));
-                }
+            // Makes interior backing for panel as a wall
+            difference() {
+                RoundBox(xshrink=(Thick + PanelThick + PanelGap), yzshrink=Thick/2);
+                RoundBox(xshrink=(Thick*2 + PanelThick + PanelGap));
             }
-        } // /union
-        translate([-Thick, -Thick, Height/2]) { // Remove the top half
+        }
+        // Remove the top half
+        translate([-Thick, -Thick, Height/2]) {
             cube([Length + Thick*2, Width + Thick*2, Height]);
         }
-        translate([-Thick, Thick*2, Thick*2]) { // Remove the center for panel visibility.
-            RoundBox($a=(Length + Thick*2), $b=(Width - Thick*4), $c=(Height - Thick*4));
-        }
+        // Remove the center for panel visibility.
+        RoundBox(xshrink=-Thick, yzshrink=Thick*2);
     }
 }
 
