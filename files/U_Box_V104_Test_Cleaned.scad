@@ -319,13 +319,15 @@ module Holes() {
     wall fixation legs and holes, and vents/decorations according to parameters.
 */
 module Coque() { //Coque - Shell
-    difference() {
-        union() {
-            MainBox();
-            Legs();
+    color(Couleur1) {
+        difference() {
+            union() {
+                MainBox();
+                Legs();
+            }
+            Decorations();
+            Holes();
         }
-        Decorations();
-        Holes();
     }
 }
 
@@ -596,20 +598,16 @@ module BPanL() {
 
 if (TShell == 1) {
     // Coque haut - Top Shell
-    color(Couleur1) {
-        translate([0, Width, Height + 0.2]) {
-            rotate([180, 0, 0]) {
-                Coque();
-            }
+    translate([0, Width, Height + 0.2]) {
+        rotate([180, 0, 0]) {
+            Coque();
         }
     }
 }
 
 if (BShell == 1) {
     // Coque bas - Bottom shell
-    color(Couleur1) {
-        Coque();
-    }
+    Coque();
     // Pied support PCB - PCB feet
     if (PCBFeet == 1) {
        Feet();
