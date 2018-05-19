@@ -408,13 +408,9 @@ module Feet() {
 */
 module Panel() {
     echo("Panel:", Thick=PanelThick, PanelWidth=PanelWidth, PanelHeight=PanelHeight);
-    rotate([90, 0, 90]) {
-        linear_extrude(height=PanelThick) {
-            translate([Filet, Filet, 0]) {
-                offset(r=Filet, $fn=Resolution) {
-                    square([PanelWidth - Filet*2, PanelHeight - Filet*2]);
-                }
-            }
+    translate([Filet, Filet, 0]) {
+        offset(r=Filet, $fn=Resolution) {
+            square([PanelWidth - Filet*2, PanelHeight - Filet*2]);
         }
     }
 }
@@ -433,8 +429,8 @@ module Panel() {
 module CylinderHole(OnOff, Cx, Cy, Cdia) {
     if (OnOff == 1) {
         echo("CylinderHole:", Cx=Cx, Cy=Cy, Cdia=Cdia + CutoutMargin);
-        translate([Cx, Cy, -PanelThick/2]) {
-            cylinder(PanelThick*2, d=Cdia + CutoutMargin, $fn=100);
+        translate([Cx, Cy, 0]) {
+            circle(d=Cdia + CutoutMargin, $fn=100);
         }
     }
 }
@@ -456,11 +452,9 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
     if (OnOff == 1) {
         echo("SquareHole:", Sx=Sx - CutoutMargin/2, Sy=Sy - CutoutMargin/2,
              Sl=Sl + CutoutMargin, Sw=Sw + CutoutMargin, Filet=Filet);
-        translate([Sx + Filet - CutoutMargin/2, Sy + Filet - CutoutMargin/2, -PanelThick/2]) {
-            linear_extrude(height=PanelThick*2) {
-                offset(r=Filet, $fn=Resolution) {
-                    square([Sl + CutoutMargin - Filet*2, Sw + CutoutMargin - Filet*2]);
-                }
+        translate([Sx + Filet - CutoutMargin/2, Sy + Filet - CutoutMargin/2, 0]) {
+            offset(r=Filet, $fn=Resolution) {
+                square([Sl + CutoutMargin - Filet*2, Sw + CutoutMargin - Filet*2]);
             }
         }
     }
@@ -534,42 +528,41 @@ module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
     edited to produce holes and text for your box.
 */
 module FPanL() {
-    difference() {
-        color(Couleur2) {
-            Panel();
-        }
+    translate([Length - (Thick + PanelGap/2 + PanelThick),
+               Thick + PanelGap/2,
+               Thick + PanelGap/2]) {
         rotate([90, 0, 90]) {
             color(Couleur2) {
-//                     <- Cutting shapes from here ->
-                //(On/Off, Xpos,Ypos,Length,Width,Filet)
-                SquareHole(1, 20, 20, 15, 10, 1);
-                SquareHole(1, 40, 20, 15, 10, 1);
-                SquareHole(1, 60, 20, 15, 10, 1);
-                //(On/Off, Xpos, Ypos, Diameter)
-                CylinderHole(1, 27, 40, 8);
-                CylinderHole(1, 47, 40, 8);
-                CylinderHole(1, 67, 40, 8);
-                SquareHole(1, 20, 50, 80, 30, 3);
-                CylinderHole(1, 93, 30, 10);
-                SquareHole(1, 120, 20, 30, 60, 3);
-//                            <- To here ->
+                linear_extrude(height=PanelThick) {
+                    difference() {
+                        Panel();
+                        // Add panel hole modules here.
+                        // SquareHole(On/Off, Xpos,Ypos,Length,Width,Filet)
+                        SquareHole(1, 20, 20, 15, 10, 1);
+                        SquareHole(1, 40, 20, 15, 10, 1);
+                        SquareHole(1, 60, 20, 15, 10, 1);
+                        // CylinderHole(On/Off, Xpos, Ypos, Diameter)
+                        CylinderHole(1, 27, 40, 8);
+                        CylinderHole(1, 47, 40, 8);
+                        CylinderHole(1, 67, 40, 8);
+                        SquareHole(1, 20, 50, 80, 30, 3);
+                        CylinderHole(1, 93, 30, 10);
+                        SquareHole(1, 120, 20, 30, 60, 3);
+                    }
+                }
+            }
+            color(TextColor) {
+                // Add text modules here.
+                // LText(On/Off, Xpos, Ypos, "Font", Size, "Text", "HAlign", "VAlign")
+                LText(1, 20, 83, "Arial Black", 4, "Digital Screen", HAlign="left");
+                LText(1, 120, 83, "Arial Black", 4, "Level", HAlign="left");
+                LText(1, 20, 11, "Arial Black", 6, "  1     2      3", HAlign="left");
+                // CText(On/Off, Xpos, Ypos, "Font", Size, Diameter, Arc(Deg), Starting Angle(Deg),"Text")
+                CText(1, 93, 29, "Arial Black", 4, 10, 180, 0, ["1", "." , "3", "." , "5", "." , "7", "." , "9", "." , "11"]);
             }
         }
     }
-
-    color(TextColor) {
-        rotate([90, 0, 90]) {
-//                            <- Adding text from here ->
-            //(On/Off, Xpos, Ypos, "Font", Size, "Text", "HAlign", "VAlign")
-            LText(1, 20, 83, "Arial Black", 4, "Digital Screen", HAlign="left");
-            LText(1, 120, 83, "Arial Black", 4, "Level", HAlign="left");
-            LText(1, 20, 11, "Arial Black", 6, "  1     2      3", HAlign="left");
-            //(On/Off, Xpos, Ypos, "Font", Size, Diameter, Arc(Deg), Starting Angle(Deg),"Text")
-            CText(1, 93, 29, "Arial Black", 4, 10, 180, 0, ["1", "." , "3", "." , "5", "." , "7", "." , "9", "." , "11"]);
-//                            <- To here ->
-        }
-    }
-} // End FPanL
+}
 
 
 ////////////////////// <- New module Panel -> //////////////////////
@@ -579,31 +572,24 @@ module FPanL() {
     edited to produce holes and text for your box.
 */
 module BPanL() {
-    translate([PanelThick, PanelWidth, 0]) {
-        rotate([0, 0, 180]) {
-            difference() {
-                color(Couleur2) {
-                    Panel();
-                }
-                rotate([90, 0, 90]) {
-                    color(Couleur2) {
-        //                     <- Cutting shapes from here ->
-
-        //                            <- To here ->
+    translate([Thick + PanelGap/2 + PanelThick,
+               Thick + PanelGap/2 + PanelWidth,
+               Thick + PanelGap/2]) {
+        rotate([90, 0, 270]) {
+            color(Couleur2) {
+                linear_extrude(height=PanelThick) {
+                    difference() {
+                        Panel();
+                        // Add panel hole modules here.
                     }
                 }
             }
-
             color(TextColor) {
-                rotate([90, 0, 90]) {
-        //                            <- Adding text from here ->
-
-        //                            <- To here ->
-                }
+                // Add text modules here.
             }
-        } // End 180 degree rotate
+        }
     }
-} // End BPanL
+}
 
 
 /////////////////////////// <- Main part -> /////////////////////////
@@ -632,14 +618,10 @@ if (BShell == 1) {
 
 // Panneau avant - Front panel
 if (FPanL == 1) {
-    translate([Length - (Thick + PanelThick + PanelGap/2), Thick + PanelGap/2, Thick + PanelGap/2]) {
-        FPanL();
-    }
+    FPanL();
 }
 
 //Panneau arrière - Back panel
 if (BPanL == 1) {
-    translate([Thick + PanelGap/2, Thick + PanelGap/2, Thick + PanelGap/2]) {
-        BPanL();
-    }
+    BPanL();
 }
