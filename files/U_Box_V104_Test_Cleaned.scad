@@ -80,7 +80,7 @@ FootHeight = 8;
 FootDia = 8;
 // - Diamètre trou - Hole diameter
 FootHole = 2.2606; // tap size for #4 coarse-thread
-FootFilet = Thick;
+FootFilet = FootHeight/4;
 
 // Foot centers are specified as distance from PCB top-left corner.
 // X is along the "length" axis, and Y is along the "width" axis.
