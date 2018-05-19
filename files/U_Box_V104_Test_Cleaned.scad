@@ -166,6 +166,7 @@ LeftEdgeOfBoardWRTBPanel = RightEdgeMargin - (PanelGap/2);
     yzshrink: the amount to reduce the width or height on one edge compared to the full box  
 */
 module RoundBox(xshrink=0, yzshrink=0) {
+    Filet = (Filet > Thick*2) ? Filet - yzshrink : Filet;
     translate([xshrink, yzshrink, yzshrink]) {
         rotate([90, 0, 90]) {
             linear_extrude(height=Length - xshrink*2) {
@@ -409,7 +410,8 @@ module Feet() {
     but uses the global parameters.
 */
 module Panel() {
-    echo("Panel:", Thick=PanelThick, PanelWidth=PanelWidth, PanelHeight=PanelHeight);
+    Filet = (Filet > Thick*2) ? Filet - Thick - PanelGap/2 : Filet - PanelGap/2;
+    echo("Panel:", Thick=PanelThick, PanelWidth=PanelWidth, PanelHeight=PanelHeight, Filet=Filet);
     translate([Filet, Filet, 0]) {
         offset(r=Filet, $fn=Resolution) {
             square([PanelWidth - Filet*2, PanelHeight - Filet*2]);
