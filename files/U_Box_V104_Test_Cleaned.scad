@@ -340,13 +340,8 @@ module Coque() { //Coque - Shell
 /*  foot module
 
     Produces a single foot for PCB mounting.
-
-    Arguments:
-    FootDia: Diameter of the foot
-    FootHole: Diameter of the screw hole in the foot
-    FootHeight: Height of the foot above the box interior
 */
-module foot(FootDia, FootHole, FootHeight) {
+module foot() {
     color(Couleur1) {
         rotate_extrude($fn=100) {
             difference() {
@@ -388,16 +383,16 @@ module Feet() {
     
         ////////////////////////////// - 4 Feet - //////////////////////////////
         translate([Foot1X, Foot1Y]) {
-            foot(FootDia, FootHole, FootHeight);
+            foot();
         }
         translate([Foot2X, Foot2Y]) {
-            foot(FootDia, FootHole, FootHeight);
+            foot();
             }
         translate([Foot3X, Foot3Y]) {
-            foot(FootDia, FootHole, FootHeight);
+            foot();
             }
         translate([Foot4X, Foot4Y]) {
-            foot(FootDia, FootHole, FootHeight);
+            foot();
         }
     } // End main translate
 } // Fin du module Feet
