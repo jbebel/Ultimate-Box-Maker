@@ -256,22 +256,26 @@ module Decorations() {
     Produces a single box fixation leg with screw hole.
 */
 module leg() {
-    difference() {
-        linear_extrude(Thick) {
+    translate([0, Thick, Height/2]) {
+        rotate([90, 0, 180]) {
             difference() {
-                circle(r=4*ScrewHole, $fn=6);
-                translate([0, ScrewHole*2, 0]) {
-                    circle(d=ScrewHole, $fn=100);
+                linear_extrude(Thick) {
+                    difference() {
+                        circle(r=4*ScrewHole, $fn=6);
+                        translate([0, ScrewHole*2, 0]) {
+                            circle(d=ScrewHole, $fn=100);
+                        }
+                    }
+                }
+                translate([-4*ScrewHole, -ScrewHole, Thick]) {
+                    rotate([90+45, 0, 0]) {
+                        cube([8*ScrewHole, 3*ScrewHole, 5*ScrewHole]);
+                    }
+                }
+                translate([-4*ScrewHole, 0, -OuterMargin]) {
+                    cube([8*ScrewHole,4*ScrewHole,OuterMargin*2]);
                 }
             }
-        }
-        translate([-4*ScrewHole, -ScrewHole, Thick]) {
-            rotate([90+45, 0, 0]) {
-                cube([8*ScrewHole, 3*ScrewHole, 5*ScrewHole]);
-            }
-        }
-        translate([-4*ScrewHole, 0, -OuterMargin]) {
-            cube([8*ScrewHole,4*ScrewHole,OuterMargin*2]);
         }
     }
 }
@@ -282,15 +286,11 @@ module leg() {
     This module produces the wall fixation box legs.
 */
 module Legs() {
-    translate([MountInset, Thick, Height/2]) {
-        rotate([90, 0, 180]) {
-            leg();
-        }
+    translate([MountInset, 0, 0]) {
+        leg();
     }
-    translate([Length - MountInset, Thick, Height/2]) {
-        rotate([90, 0, 180]) {
-            leg();
-        }
+    translate([Length - MountInset, 0, 0]) {
+        leg();
     }
 }
 
