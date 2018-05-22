@@ -251,31 +251,45 @@ module Decorations() {
 }
 
 
+/*  leg: leg module
+
+    Produces a single box fixation leg with screw hole.
+*/
+module leg() {
+    difference() {
+        linear_extrude(Thick) {
+            difference() {
+                circle(r=4*ScrewHole, $fn=6);
+                translate([0, ScrewHole*2, 0]) {
+                    circle(d=ScrewHole, $fn=100);
+                }
+            }
+        }
+        translate([-4*ScrewHole, -ScrewHole, Thick]) {
+            rotate([90+45, 0, 0]) {
+                cube([8*ScrewHole, 3*ScrewHole, 5*ScrewHole]);
+            }
+        }
+        translate([-4*ScrewHole, 0, -OuterMargin]) {
+            cube([8*ScrewHole,4*ScrewHole,OuterMargin*2]);
+        }
+    }
+}
+
+
 /*  Legs: legs module
 
     This module produces the wall fixation box legs.
 */
 module Legs() {
-    difference() {
-        union() {
-            translate([MountInset, Thick, Height/2]) {
-                rotate([270, 0, 0]) {
-                    cylinder(Thick, r=4*ScrewHole, $fn=6);
-                }
-            }
-            translate([Length - MountInset, Thick, Height/2]) {
-                rotate([270, 0, 0]) {
-                    cylinder(Thick, r=4*ScrewHole, $fn=6);
-                }
-            }
+    translate([MountInset, Thick, Height/2]) {
+        rotate([90, 0, 180]) {
+            leg();
         }
-        translate([0, Thick*2, Height/2 - ScrewHole]) {
-            rotate([180 + 45, 0, 0]) {
-                cube([Length, 5*ScrewHole, 3*ScrewHole]);
-            }
-        }
-        translate([0, 0, Height/2]) {
-            cube([Length, Thick + OuterMargin, 4*ScrewHole]);
+    }
+    translate([Length - MountInset, Thick, Height/2]) {
+        rotate([90, 0, 180]) {
+            leg();
         }
     }
 }
@@ -289,16 +303,6 @@ module Legs() {
 module Holes() {
     union() {
         $fn = 100;
-        translate([MountInset, 0, Height/2 + 2*ScrewHole]) {
-            rotate([270, 0, 0]) {
-                cylinder(Thick*3, d=ScrewHole);
-            }
-        }
-        translate([Length - MountInset, 0, Height/2 + 2*ScrewHole]) {
-            rotate([270, 0, 0]) {
-                cylinder(Thick*3, d=ScrewHole);
-            }
-        }
         translate([MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
             rotate([90, 0, 0]) {
                 cylinder(Thick*3, d=ScrewHole);
