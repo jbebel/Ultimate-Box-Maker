@@ -52,17 +52,17 @@ Vent = 1; // [0:No, 1:Yes]
 Vent_width = 1.5;
 
 
-/* [Box Fixation Legs] */
+/* [Box Fixation Tabs] */
 // - Side screw hole diameter
 ScrewHole = 2.2606;
-// Back left leg
-BLLeg = 1; // [0:Bottom, 1:Top]
-// Back right leg
-BRLeg = 1; // [0:Bottom, 1:Top]
-// Front left leg
-FLLeg = 1; // [0:Bottom, 1:Top]
-// Front right leg
-FRLeg = 1; // [0:Bottom, 1:Top]
+// Back left tab
+BLTab = 1; // [0:Bottom, 1:Top]
+// Back right tab
+BRTab = 1; // [0:Bottom, 1:Top]
+// Front left tab
+FLTab = 1; // [0:Bottom, 1:Top]
+// Front right tab
+FRTab = 1; // [0:Bottom, 1:Top]
 
 
 /* [PCB options] */
@@ -197,7 +197,7 @@ module RoundBox(xshrink=0, yzshrink=0) {
 
 /*  MainBox: Main box module
 
-    This module produces the simple main box half. No feet, legs, vents or fixation
+    This module produces the simple main box half. No feet, tabs, vents or fixation
     is applied here.
 */
 module MainBox() {
@@ -283,11 +283,11 @@ module Coque() { //Coque - Shell
 }
 
 
-/*  leg: leg module
+/*  tab: tab module
 
-    Produces a single box fixation leg with screw hole.
+    Produces a single box fixation tab with screw hole.
 */
-module leg() {
+module tab() {
     translate([0, Thick, Height/2]) {
         rotate([90, 0, 180]) {
             difference() {
@@ -313,37 +313,37 @@ module leg() {
 }
 
 
-/*  Legs: legs module
+/*  Tabs: tabs module
 
-    This module produces the wall fixation box legs.
-    Legs are produced according to the parameters for XXLeg indicating top or bottom.
+    This module produces the wall fixation box tabs.
+    Tabs are produced according to the parameters for XXTab indicating top or bottom.
 
     Arguments:
-        top: 0 for bottom shell legs. 1 for top shell legs. defaults to bottom.
+        top: 0 for bottom shell tabs. 1 for top shell tabs. defaults to bottom.
 */
-module Legs(top=0) {
+module Tabs(top=0) {
     color(Couleur1) {
-        if (BLLeg == top) {
+        if (BLTab == top) {
             translate([MountInset, 0, 0]) {
-                leg();
+                tab();
             }
         }
-        if (FLLeg == top) {
+        if (FLTab == top) {
             translate([Length - MountInset, 0, 0]) {
-                leg();
+                tab();
             }
         }
-        if (BRLeg == top) {
+        if (BRTab == top) {
             translate([MountInset, Width, 0]) {
                 rotate([0, 0, 180]) {
-                    leg();
+                    tab();
                 }
             }
         }
-        if (FRLeg == top) {
+        if (FRTab == top) {
             translate([Length - MountInset, Width, 0]) {
                 rotate([0, 0, 180]) {
-                    leg();
+                    tab();
                 }
             }
         }
@@ -355,7 +355,7 @@ module Legs(top=0) {
 
     This module produces the holes necessary in the box fixation tabs and in the wall
     of the box for the corresponding tabs to affix to.
-    Holes are produced according to the parameters for XXLeg indicating top or bottom.
+    Holes are produced according to the parameters for XXTab indicating top or bottom.
 
     Arguments:
         top: 0 for bottom shell holes. 1 for top shell holes. defaults to bottom.
@@ -363,28 +363,28 @@ module Legs(top=0) {
 module Holes(top=0) {
     color(Couleur1) {
         $fn = 100;
-        if (BRLeg != top) {
+        if (BRTab != top) {
             translate([MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
                 rotate([90, 0, 0]) {
                     cylinder(Thick*3, d=ScrewHole);
                 }
             }
         }
-        if (FRLeg!= top) {
+        if (FRTab!= top) {
             translate([Length - MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
                 rotate([90, 0, 0]) {
                     cylinder(Thick*3, d=ScrewHole);
                 }
             }
         }
-        if (BLLeg!= top) {
+        if (BLTab!= top) {
             translate([MountInset, -Thick, Height/2 - 2*ScrewHole]) {
                 rotate([270, 0, 0]) {
                     cylinder(Thick*3, d=ScrewHole);
                 }
             }
         }
-        if (FLLeg != top) {
+        if (FLTab != top) {
             translate([Length - MountInset, -Thick, Height/2 - 2*ScrewHole]) {
                 rotate([270, 0, 0]) {
                     cylinder(Thick*3, d=ScrewHole);
@@ -458,7 +458,7 @@ module Feet() {
 
 /*  TopShell: top shell module
 
-    Produces the top shell, including requested fixation legs and holes
+    Produces the top shell, including requested fixation tabs and holes
     Model is rotated and translated to the appropriate position.
 */
 module TopShell() {
@@ -467,7 +467,7 @@ module TopShell() {
             difference() {
                 union() {
                     Coque();
-                    Legs(top=1);
+                    Tabs(top=1);
                 }
                 Holes(top=1);
             }
@@ -478,14 +478,14 @@ module TopShell() {
 
 /*  BottomShell: bottom shell module
 
-    Produces the bottom shell, including requested fixation legs, holes,
+    Produces the bottom shell, including requested fixation tabs, holes,
     and PCB feet.
 */
 module BottomShell() {
     difference() {
         union() {
             Coque();
-            Legs();
+            Tabs();
             if (PCBFeet == 1) {
                Feet();
             }
