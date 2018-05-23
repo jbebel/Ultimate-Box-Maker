@@ -44,6 +44,8 @@ CutoutMargin = 0.6;
 OuterMargin = 0.2;
 // Pieds PCB - PCB feet (x4)
 PCBFeet = 1; // [0:No, 1:Yes]
+// - Decorations?
+Decorations = 1; // [0:No, 1:Yes]
 // - Decorations to ventilation holes
 Vent = 1; // [0:No, 1:Yes]
 // - Decoration-Holes width (in mm)
@@ -261,7 +263,9 @@ module Coque() { //Coque - Shell
     color(Couleur1) {
         difference() {
             MainBox();
-            Decorations();
+            if (Decorations == 1) {
+                Decorations();
+            }
         }
     }
 }
