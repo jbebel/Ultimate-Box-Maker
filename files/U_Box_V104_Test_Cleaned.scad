@@ -251,6 +251,22 @@ module Decorations() {
 }
 
 
+/*  Coque: Shell module
+
+    This module takes no arguments, but produces a box shell. This is half the box,
+    including slots for end panels, rounded corners according to Filet and Resolution,
+    and vents/decorations according to parameters.
+*/
+module Coque() { //Coque - Shell
+    color(Couleur1) {
+        difference() {
+            MainBox();
+            Decorations();
+        }
+    }
+}
+
+
 /*  leg: leg module
 
     Produces a single box fixation leg with screw hole.
@@ -286,11 +302,13 @@ module leg() {
     This module produces the wall fixation box legs.
 */
 module Legs() {
-    translate([MountInset, 0, 0]) {
-        leg();
-    }
-    translate([Length - MountInset, 0, 0]) {
-        leg();
+    color(Couleur1) {
+        translate([MountInset, 0, 0]) {
+            leg();
+        }
+        translate([Length - MountInset, 0, 0]) {
+            leg();
+        }
     }
 }
 
@@ -312,26 +330,6 @@ module Holes() {
             rotate([90, 0, 0]) {
                 cylinder(Thick*3, d=ScrewHole);
             }
-        }
-    }
-}
-
-
-/*  Coque: Shell module
-
-    This module takes no arguments, but produces a box shell. This is half the box,
-    including slots for end panels, rounded corners according to Filet and Resolution,
-    wall fixation legs and holes, and vents/decorations according to parameters.
-*/
-module Coque() { //Coque - Shell
-    color(Couleur1) {
-        difference() {
-            union() {
-                MainBox();
-                Legs();
-            }
-            Decorations();
-            Holes();
         }
     }
 }
@@ -396,6 +394,45 @@ module Feet() {
         }
     } // End main translate
 } // Fin du module Feet
+
+
+/*  TopShell: top shell module
+
+    Produces the top shell, including requested fixation legs and holes
+    Model is rotated and translated to the appropriate position.
+*/
+module TopShell() {
+    translate([0, Width, Height + 0.2]) {
+        rotate([180, 0, 0]) {
+            difference() {
+                union() {
+                    Coque();
+                    Legs();
+                }
+                Holes();
+            }
+        }
+    }
+}
+
+
+/*  BottomShell: bottom shell module
+
+    Produces the bottom shell, including requested fixation legs, holes,
+    and PCB feet.
+*/
+module BottomShell() {
+    difference() {
+        union() {
+            Coque();
+            Legs();
+            if (PCBFeet == 1) {
+               Feet();
+            }
+        }
+        Holes();
+    }
+}
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -599,20 +636,12 @@ module BPanL() {
 
 if (TShell == 1) {
     // Coque haut - Top Shell
-    translate([0, Width, Height + 0.2]) {
-        rotate([180, 0, 0]) {
-            Coque();
-        }
-    }
+    TopShell();
 }
 
 if (BShell == 1) {
     // Coque bas - Bottom shell
-    Coque();
-    // Pied support PCB - PCB feet
-    if (PCBFeet == 1) {
-       Feet();
-    }
+    BottomShell();
 }
 
 // Panneau avant - Front panel
