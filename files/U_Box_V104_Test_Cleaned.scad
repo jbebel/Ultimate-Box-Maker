@@ -52,6 +52,19 @@ Vent = 1; // [0:No, 1:Yes]
 Vent_width = 1.5;
 
 
+/* [Box Fixation Legs] */
+// - Side screw hole diameter
+ScrewHole = 2.2606;
+// Back left leg
+BLLeg = 1; // [0:Bottom, 1:Top]
+// Back right leg
+BRLeg = 1; // [0:Bottom, 1:Top]
+// Front left leg
+FLLeg = 1; // [0:Bottom, 1:Top]
+// Front right leg
+FRLeg = 1; // [0:Bottom, 1:Top]
+
+
 /* [PCB options] */
 // - Longueur PCB - PCB Length
 PCBLength = 80;
@@ -71,8 +84,7 @@ LeftEdgeMargin = 11;
 RightEdgeMargin = 95;
 // - Margin between top of PCB and box top.
 TopPCBMargin = 84;
-// - Side screw hole diameter
-ScrewHole = 2.2606;
+
 
 
 /* [PCB_Feet] */
@@ -304,14 +316,36 @@ module leg() {
 /*  Legs: legs module
 
     This module produces the wall fixation box legs.
+    Legs are produced according to the parameters for XXLeg indicating top or bottom.
+
+    Arguments:
+        top: 0 for bottom shell legs. 1 for top shell legs. defaults to bottom.
 */
-module Legs() {
+module Legs(top=0) {
     color(Couleur1) {
-        translate([MountInset, 0, 0]) {
-            leg();
+        if (BLLeg == top) {
+            translate([MountInset, 0, 0]) {
+                leg();
+            }
         }
-        translate([Length - MountInset, 0, 0]) {
-            leg();
+        if (FLLeg == top) {
+            translate([Length - MountInset, 0, 0]) {
+                leg();
+            }
+        }
+        if (BRLeg == top) {
+            translate([MountInset, Width, 0]) {
+                rotate([0, 0, 180]) {
+                    leg();
+                }
+            }
+        }
+        if (FRLeg == top) {
+            translate([Length - MountInset, Width, 0]) {
+                rotate([0, 0, 180]) {
+                    leg();
+                }
+            }
         }
     }
 }
@@ -321,18 +355,40 @@ module Legs() {
 
     This module produces the holes necessary in the box fixation tabs and in the wall
     of the box for the corresponding tabs to affix to.
+    Holes are produced according to the parameters for XXLeg indicating top or bottom.
+
+    Arguments:
+        top: 0 for bottom shell holes. 1 for top shell holes. defaults to bottom.
 */
-module Holes() {
-    union() {
+module Holes(top=0) {
+    color(Couleur1) {
         $fn = 100;
-        translate([MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
-            rotate([90, 0, 0]) {
-                cylinder(Thick*3, d=ScrewHole);
+        if (BRLeg != top) {
+            translate([MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
+                rotate([90, 0, 0]) {
+                    cylinder(Thick*3, d=ScrewHole);
+                }
             }
         }
-        translate([Length - MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
-            rotate([90, 0, 0]) {
-                cylinder(Thick*3, d=ScrewHole);
+        if (FRLeg!= top) {
+            translate([Length - MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
+                rotate([90, 0, 0]) {
+                    cylinder(Thick*3, d=ScrewHole);
+                }
+            }
+        }
+        if (BLLeg!= top) {
+            translate([MountInset, -Thick, Height/2 - 2*ScrewHole]) {
+                rotate([270, 0, 0]) {
+                    cylinder(Thick*3, d=ScrewHole);
+                }
+            }
+        }
+        if (FLLeg != top) {
+            translate([Length - MountInset, -Thick, Height/2 - 2*ScrewHole]) {
+                rotate([270, 0, 0]) {
+                    cylinder(Thick*3, d=ScrewHole);
+                }
             }
         }
     }
@@ -406,14 +462,14 @@ module Feet() {
     Model is rotated and translated to the appropriate position.
 */
 module TopShell() {
-    translate([0, Width, Height + 0.2]) {
-        rotate([180, 0, 0]) {
+    translate([0, 0, Height + 0.2]) {
+        mirror([0, 0, 1]) {
             difference() {
                 union() {
                     Coque();
-                    Legs();
+                    Legs(top=1);
                 }
-                Holes();
+                Holes(top=1);
             }
         }
     }
