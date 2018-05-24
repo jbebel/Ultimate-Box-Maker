@@ -55,6 +55,8 @@ Vent_width = 1.5;
 /* [Box Fixation Tabs] */
 // - Side screw hole diameter
 ScrewHole = 2.2606;
+// Thickness of fixation tabs
+TabThick = 2;
 // Back left tab
 BLTab = 1; // [0:Bottom, 1:Top]
 // Back right tab
@@ -291,7 +293,7 @@ module tab() {
     translate([0, Thick, Height/2]) {
         rotate([90, 0, 180]) {
             difference() {
-                linear_extrude(Thick) {
+                linear_extrude(TabThick) {
                     difference() {
                         circle(r=4*ScrewHole, $fn=6);
                         translate([0, ScrewHole*2, 0]) {
@@ -299,7 +301,7 @@ module tab() {
                         }
                     }
                 }
-                translate([-4*ScrewHole, -ScrewHole, Thick]) {
+                translate([-4*ScrewHole, -ScrewHole, TabThick]) {
                     rotate([90+45, 0, 0]) {
                         cube([8*ScrewHole, 3*ScrewHole, 5*ScrewHole]);
                     }
