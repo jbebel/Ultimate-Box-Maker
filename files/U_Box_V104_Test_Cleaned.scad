@@ -166,11 +166,59 @@ PanelWidth = Width - Thick*2 - PanelGap;
 PanelHeight = Height - Thick*2 - PanelGap;
 
 
+/*  Panel Manager
+
+    Use the below 4 modules to produce holes and text on the front and back panels.
+    The holes modules should contain instances of SquareHole or CylinderHole
+    defined later in this file. The text modules should contain instances of
+    LText or CText defined later in this file. It is recommended to use variables
+    that you define for your needs to create the size and positions of these
+    objects.
+*/
+
 // Calculate board-relative positions with respect to the panel, for
 // convenience in placing panel elements.
 TopOfBoardWRTPanel = FootHeight + PCBThick - (PanelGap/2);
 LeftEdgeOfBoardWRTFPanel = LeftEdgeMargin - (PanelGap/2);
 LeftEdgeOfBoardWRTBPanel = RightEdgeMargin - (PanelGap/2);
+
+
+// Holes for front panel
+module FPanelHoles() {
+    // SquareHole(On/Off, Xpos,Ypos,Length,Width,Filet)
+    SquareHole(1, 20, 20, 15, 10, 1);
+    SquareHole(1, 40, 20, 15, 10, 1);
+    SquareHole(1, 60, 20, 15, 10, 1);
+    // CylinderHole(On/Off, Xpos, Ypos, Diameter)
+    CylinderHole(1, 27, 40, 8);
+    CylinderHole(1, 47, 40, 8);
+    CylinderHole(1, 67, 40, 8);
+    SquareHole(1, 20, 50, 80, 30, 3);
+    CylinderHole(1, 93, 30, 10);
+    SquareHole(1, 120, 20, 30, 60, 3);
+}
+
+
+// Text for front panel
+module FPanelText() {
+    // LText(On/Off, Xpos, Ypos, "Font", Size, "Text", "HAlign", "VAlign")
+    LText(1, 20, 83, "Arial Black", 4, "Digital Screen", HAlign="left");
+    LText(1, 120, 83, "Arial Black", 4, "Level", HAlign="left");
+    LText(1, 20, 11, "Arial Black", 6, "  1     2      3", HAlign="left");
+    // CText(On/Off, Xpos, Ypos, "Font", Size, Diameter, Arc(Deg), Starting Angle(Deg),"Text")
+    CText(1, 93, 29, "Arial Black", 4, 10, 180, 0,
+          ["1", "." , "3", "." , "5", "." , "7", "." , "9", "." , "11"]);
+}
+
+
+// Holes for back panel
+module BPanelHoles() {
+}
+
+
+// Text for back panel
+module BPanelText() {
+}
 
 
 /* Generic rounded box
@@ -526,11 +574,6 @@ module BottomShell() {
 }
 
 
-////////////////////////////////////////////////////////////////////////
-////////////////////// <- Holes Panel Manager -> ///////////////////////
-////////////////////////////////////////////////////////////////////////
-
-
 /*  Panel module
 
     Produces a single panel with potentially rounded corners. Takes no arguments
@@ -667,29 +710,12 @@ module FPanL() {
                 linear_extrude(height=PanelThick) {
                     difference() {
                         Panel();
-                        // Add panel hole modules here.
-                        // SquareHole(On/Off, Xpos,Ypos,Length,Width,Filet)
-                        SquareHole(1, 20, 20, 15, 10, 1);
-                        SquareHole(1, 40, 20, 15, 10, 1);
-                        SquareHole(1, 60, 20, 15, 10, 1);
-                        // CylinderHole(On/Off, Xpos, Ypos, Diameter)
-                        CylinderHole(1, 27, 40, 8);
-                        CylinderHole(1, 47, 40, 8);
-                        CylinderHole(1, 67, 40, 8);
-                        SquareHole(1, 20, 50, 80, 30, 3);
-                        CylinderHole(1, 93, 30, 10);
-                        SquareHole(1, 120, 20, 30, 60, 3);
+                        FPanelHoles();
                     }
                 }
             }
             color(TextColor) {
-                // Add text modules here.
-                // LText(On/Off, Xpos, Ypos, "Font", Size, "Text", "HAlign", "VAlign")
-                LText(1, 20, 83, "Arial Black", 4, "Digital Screen", HAlign="left");
-                LText(1, 120, 83, "Arial Black", 4, "Level", HAlign="left");
-                LText(1, 20, 11, "Arial Black", 6, "  1     2      3", HAlign="left");
-                // CText(On/Off, Xpos, Ypos, "Font", Size, Diameter, Arc(Deg), Starting Angle(Deg),"Text")
-                CText(1, 93, 29, "Arial Black", 4, 10, 180, 0, ["1", "." , "3", "." , "5", "." , "7", "." , "9", "." , "11"]);
+                FPanelText();
             }
         }
     }
@@ -711,12 +737,12 @@ module BPanL() {
                 linear_extrude(height=PanelThick) {
                     difference() {
                         Panel();
-                        // Add panel hole modules here.
+                        BPanelHoles();
                     }
                 }
             }
             color(TextColor) {
-                // Add text modules here.
+                BPanelText();
             }
         }
     }
