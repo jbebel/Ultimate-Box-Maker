@@ -53,7 +53,7 @@ Vent_width = 1.5;
 
 
 /* [Box Fixation Tabs] */
-// - Side screw hole diameter
+// - Side screw hole (or snap) diameter
 ScrewHole = 2.2606;
 // Thickness of fixation tabs
 TabThick = 2;
@@ -65,6 +65,8 @@ BRTab = 1; // [0:Bottom, 1:Top]
 FLTab = 1; // [0:Bottom, 1:Top]
 // Front right tab
 FRTab = 1; // [0:Bottom, 1:Top]
+// EXPERIMENTAL: Snap tabs
+SnapTabs = 0; // [0:Screws, 1:Snaps]
 
 
 /* [PCB options] */
@@ -86,7 +88,6 @@ LeftEdgeMargin = 11;
 RightEdgeMargin = 95;
 // - Margin between top of PCB and box top.
 TopPCBMargin = 84;
-
 
 
 /* [PCB_Feet] */
@@ -287,7 +288,7 @@ module Coque() { //Coque - Shell
 
 /*  tab: tab module
 
-    Produces a single box fixation tab with screw hole.
+    Produces a single box fixation tab with screw hole or snap button
 */
 module tab() {
     translate([0, Thick, Height/2]) {
@@ -296,8 +297,10 @@ module tab() {
                 linear_extrude(TabThick) {
                     difference() {
                         circle(r=4*ScrewHole, $fn=6);
-                        translate([0, ScrewHole*2, 0]) {
-                            circle(d=ScrewHole, $fn=100);
+                        if (!SnapTabs) {
+                            translate([0, ScrewHole*2, 0]) {
+                                circle(d=ScrewHole, $fn=100);
+                            }
                         }
                     }
                 }
@@ -308,6 +311,16 @@ module tab() {
                 }
                 translate([-4*ScrewHole, 0, -OuterMargin]) {
                     cube([8*ScrewHole,4*ScrewHole,OuterMargin*2]);
+                }
+            }
+            if (SnapTabs) {
+                translate([0, ScrewHole*2, OuterMargin]) {
+                    difference() {
+                        sphere(d=ScrewHole, $fn=100);
+                        translate([0, 0, ScrewHole*.75]) {
+                            cube(ScrewHole, center=true);
+                        }
+                    }
                 }
             }
         }
@@ -353,6 +366,27 @@ module Tabs(top=0) {
 }
 
 
+/*  hole: hole module
+
+    Produces a box hole for fixation. This is either a cylinder for a screw
+    or a semispherical indention for snap tabs.
+*/
+module hole() {
+    if (SnapTabs) {
+        translate([0, -Thick, Height/2 - 2*ScrewHole]) {
+            sphere(d=ScrewHole, $fn=100);
+        }
+    }
+    else {
+        translate([0, Thick, Height/2 - 2*ScrewHole]) {
+            rotate([90, 0, 0]) {
+                cylinder(Thick*3, d=ScrewHole, $fn=100);
+            }
+        }
+    }
+}
+
+
 /*  Holes: holes module
 
     This module produces the holes necessary in the box fixation tabs and in the wall
@@ -364,32 +398,27 @@ module Tabs(top=0) {
 */
 module Holes(top=0) {
     color(Couleur1) {
-        $fn = 100;
         if (BRTab != top) {
-            translate([MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
-                rotate([90, 0, 0]) {
-                    cylinder(Thick*3, d=ScrewHole);
-                }
+            translate([MountInset, Width, 0]) {
+                hole();
             }
         }
         if (FRTab!= top) {
-            translate([Length - MountInset, Width + Thick, Height/2 - 2*ScrewHole]) {
-                rotate([90, 0, 0]) {
-                    cylinder(Thick*3, d=ScrewHole);
-                }
+            translate([Length - MountInset, Width, 0]) {
+                hole();
             }
         }
         if (BLTab!= top) {
-            translate([MountInset, -Thick, Height/2 - 2*ScrewHole]) {
-                rotate([270, 0, 0]) {
-                    cylinder(Thick*3, d=ScrewHole);
+            translate([MountInset, 0, 0]) {
+                rotate([0, 0, 180]) {
+                    hole();
                 }
             }
         }
         if (FLTab != top) {
-            translate([Length - MountInset, -Thick, Height/2 - 2*ScrewHole]) {
-                rotate([270, 0, 0]) {
-                    cylinder(Thick*3, d=ScrewHole);
+            translate([Length - MountInset, 0, 0]) {
+                rotate([0, 0, 180]) {
+                    hole();
                 }
             }
         }
