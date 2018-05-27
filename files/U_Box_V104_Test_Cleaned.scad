@@ -451,12 +451,12 @@ module Holes(top=0) {
                 hole();
             }
         }
-        if (FRTab!= top) {
+        if (FRTab != top) {
             translate([Length - MountInset, Width, 0]) {
                 hole();
             }
         }
-        if (BLTab!= top) {
+        if (BLTab != top) {
             translate([MountInset, 0, 0]) {
                 rotate([0, 0, 180]) {
                     hole();
