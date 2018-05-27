@@ -36,12 +36,10 @@ FontThick = 0.5;
 Filet = 2; //[0.1:12]
 // - 0 for beveled, 1 for rounded
 Round = 1; // [0:No, 1:Yes]
-// - Tolérance - Tolerance (Panel/rails gap)
-PanelGap = 0.9;
 // - Printer margin around interior cutouts
-CutoutMargin = 0.6;
-// - Printer margin around exterior edges
-OuterMargin = 0.2;
+CutoutMargin = 0.3;
+// - Margin between mating parts
+PartMargin = 0.1;
 // Pieds PCB - PCB feet (x4)
 PCBFeet = 1; // [0:No, 1:Yes]
 // - Decorations?
@@ -50,6 +48,8 @@ Decorations = 1; // [0:No, 1:Yes]
 Vent = 1; // [0:No, 1:Yes]
 // - Decoration-Holes width (in mm)
 Vent_width = 1.5;
+// - Tolérance - Tolerance (Panel/rails gap)
+PanelGap = CutoutMargin*2 + PartMargin*2;
 
 
 /* [Box Fixation Tabs] */
@@ -216,7 +216,7 @@ module BPanelHoles() {
     CylinderHole(1,
                  LeftEdgeOfBoardWRTBPanel + 16.4,
                  TopOfBoardWRTPanel + 7,
-                 5);
+                 5 + PartMargin*2);
     SquareHole(1,
                LeftEdgeOfBoardWRTBPanel + 37.3,
                TopOfBoardWRTPanel,
@@ -380,12 +380,12 @@ module tab() {
                         cube([8*ScrewHole, 3*ScrewHole, 5*ScrewHole]);
                     }
                 }
-                translate([-4*ScrewHole, 0, -OuterMargin]) {
-                    cube([8*ScrewHole,4*ScrewHole,OuterMargin*2]);
+                translate([-4*ScrewHole, 0, -PartMargin]) {
+                    cube([8*ScrewHole,4*ScrewHole,PartMargin*2]);
                 }
             }
             if (SnapTabs) {
-                translate([0, ScrewHole*2, OuterMargin]) {
+                translate([0, ScrewHole*2, PartMargin]) {
                     difference() {
                         sphere(d=ScrewHole, $fn=100);
                         translate([0, 0, ScrewHole*.75]) {
@@ -625,9 +625,9 @@ module Panel() {
 */
 module CylinderHole(OnOff, Cx, Cy, Cdia) {
     if (OnOff == 1) {
-        echo("CylinderHole:", Cx=Cx, Cy=Cy, Cdia=Cdia + CutoutMargin);
+        echo("CylinderHole:", Cx=Cx, Cy=Cy, Cdia=Cdia + CutoutMargin*2);
         translate([Cx, Cy, 0]) {
-            circle(d=Cdia + CutoutMargin, $fn=100);
+            circle(d=Cdia + CutoutMargin*2, $fn=100);
         }
     }
 }
@@ -647,11 +647,11 @@ module CylinderHole(OnOff, Cx, Cy, Cdia) {
 */
 module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
     if (OnOff == 1) {
-        echo("SquareHole:", Sx=Sx - CutoutMargin/2, Sy=Sy - CutoutMargin/2,
-             Sl=Sl + CutoutMargin, Sw=Sw + CutoutMargin, Filet=Filet);
-        translate([Sx + Filet - CutoutMargin/2, Sy + Filet - CutoutMargin/2, 0]) {
+        echo("SquareHole:", Sx=Sx - CutoutMargin, Sy=Sy - CutoutMargin,
+             Sl=Sl + CutoutMargin*2, Sw=Sw + CutoutMargin*2, Filet=Filet);
+        translate([Sx + Filet - CutoutMargin, Sy + Filet - CutoutMargin, 0]) {
             offset(r=Filet, $fn=Resolution) {
-                square([Sl + CutoutMargin - Filet*2, Sw + CutoutMargin - Filet*2]);
+                square([Sl + CutoutMargin*2 - Filet*2, Sw + CutoutMargin*2 - Filet*2]);
             }
         }
     }
