@@ -73,19 +73,19 @@ SnapTabs = 0; // [0:Screws, 1:Snaps]
 // - Longueur PCB - PCB Length
 PCBLength = 80;
 // - Largeur PCB - PCB Width
-PCBWidth = 60;
+PCBWidth = 144;
 // - Epaisseur PCB Thickness
 PCBThick = 1.6;
 // You likely need to maintain |Thick| margin on the left and right for tabs
 // and whatnot.
 // - Margin between front panel and PCB
-FrontEdgeMargin = 60;
+FrontEdgeMargin = 70;
 // - Margin between back panel and PCB
-BackEdgeMargin = 10;
+BackEdgeMargin = 0;
 // - Margin between left wall and PCB
 LeftEdgeMargin = 11;
 // - Margin between right wall and PCB
-RightEdgeMargin = 95;
+RightEdgeMargin = 11;
 // - Margin between top of PCB and box top.
 TopPCBMargin = 84;
 
@@ -213,11 +213,34 @@ module FPanelText() {
 
 // Holes for back panel
 module BPanelHoles() {
+    CylinderHole(1,
+                 LeftEdgeOfBoardWRTBPanel + 16.4,
+                 TopOfBoardWRTPanel + 7,
+                 5);
+    SquareHole(1,
+               LeftEdgeOfBoardWRTBPanel + 37.3,
+               TopOfBoardWRTPanel,
+               39.2,
+               12.55,
+               1);
 }
 
 
 // Text for back panel
 module BPanelText() {
+    LText(1,
+          LeftEdgeOfBoardWRTBPanel + 16.4,
+          TopOfBoardWRTPanel + 7 + 5,
+          "Arial Black",
+          4, "PWR"
+    );
+    LText(1,
+          LeftEdgeOfBoardWRTBPanel + 37.3 + 39.2/2,
+          TopOfBoardWRTPanel + 12.55 + 2,
+          "Arial Black",
+          4,
+          "DATA"
+    );
 }
 
 
