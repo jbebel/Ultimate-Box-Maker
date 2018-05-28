@@ -504,9 +504,9 @@ module Holes(top=0) {
 module foot() {
     color(Couleur1) {
         rotate_extrude($fn=100) {
-            difference() {
-                translate([FootHole/2, 0, 0]) {
-                    square([(FootDia - FootHole)/2 + FootFilet, FootHeight]);
+            !difference() {
+                #translate([FootHole/2 + CutoutMargin, 0, 0]) {
+                    square([(FootDia - FootHole)/2 - CutoutMargin + FootFilet, FootHeight]);
                 }
                 translate([FootDia/2 + FootFilet, FootFilet, 0]) {
                     offset(r=FootFilet, $fn=Resolution) {
