@@ -349,7 +349,7 @@ module Coque() { //Coque - Shell
     color(Couleur1) {
         difference() {
             MainBox();
-            if (Decorations == 1) {
+            if (Decorations) {
                 Decorations();
             }
         }
@@ -588,7 +588,7 @@ module BottomShell() {
         union() {
             Coque();
             Tabs();
-            if (PCBFeet == 1) {
+            if (PCBFeet) {
                Feet();
             }
         }
@@ -624,7 +624,7 @@ module Panel() {
     Cdia: diameter of hole
 */
 module CylinderHole(OnOff, Cx, Cy, Cdia) {
-    if (OnOff == 1) {
+    if (OnOff) {
         echo("CylinderHole:", Cx=Cx, Cy=Cy, Cdia=Cdia + CutoutMargin*2);
         translate([Cx, Cy, 0]) {
             circle(d=Cdia + CutoutMargin*2, $fn=100);
@@ -646,7 +646,7 @@ module CylinderHole(OnOff, Cx, Cy, Cdia) {
     Filet: radius of rounded corner
 */
 module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
-    if (OnOff == 1) {
+    if (OnOff) {
         echo("SquareHole:", Sx=Sx - CutoutMargin, Sy=Sy - CutoutMargin,
              Sl=Sl + CutoutMargin*2, Sw=Sw + CutoutMargin*2, Filet=Filet);
         translate([Sx + Filet - CutoutMargin, Sy + Filet - CutoutMargin, 0]) {
@@ -673,7 +673,7 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
     VAlign: Text vertical alignment. Defaults to "baseline". "top", "center", and "bottom" available.
 */
 module LText(OnOff,Tx,Ty,Font,Size,Content, HAlign="center", VAlign="baseline") {
-    if (OnOff == 1) {
+    if (OnOff) {
         echo("LText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size, Content=Content, HAlign=HAlign, VAlign=VAlign);
         translate([Tx, Ty, PanelThick]) {
             linear_extrude(height=FontThick) {
@@ -699,7 +699,7 @@ module LText(OnOff,Tx,Ty,Font,Size,Content, HAlign="center", VAlign="baseline") 
     Content: The text
 */
 module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
-    if (OnOff == 1) {
+    if (OnOff) {
         echo("CText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size,
              TxtRadius=TxtRadius, Turn=Turn, Content=Content);
         Angle = -Angl / (len(Content) - 1);
@@ -774,22 +774,22 @@ module BPanL() {
 
 /////////////////////////// <- Main part -> /////////////////////////
 
-if (TShell == 1) {
+if (TShell) {
     // Coque haut - Top Shell
     TopShell();
 }
 
-if (BShell == 1) {
+if (BShell) {
     // Coque bas - Bottom shell
     BottomShell();
 }
 
 // Panneau avant - Front panel
-if (FPanL == 1) {
+if (FPanL) {
     FPanL();
 }
 
 //Panneau arrière - Back panel
-if (BPanL == 1) {
+if (BPanL) {
     BPanL();
 }
