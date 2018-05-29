@@ -97,6 +97,8 @@ FootHeight = 8;
 FootDia = 8;
 // - Diamètre trou - Hole diameter
 FootHole = 2.2606; // tap size for #4 coarse-thread
+// - EXPERIMENTAL Screwless design
+Screwless = 0; // [0:Screws, 1:Screwless]
 FootFilet = FootHeight/4;
 
 // Foot centers are specified as distance from PCB top-left corner.
@@ -497,6 +499,20 @@ module Holes(top=0) {
 }
 
 
+module PCB() {
+    translate([0, 0, FootHeight]) {
+        cube([PCBLength, PCBWidth, PCBThick]);
+        translate([PCBLength/2, PCBWidth/2, PCBThick]) {
+            color("Olive") {
+                linear_extrude(height=FontThick) {
+                    text("PCB", font="Arial black", halign="center", valign="center");
+                }
+            }
+        }
+    }
+}
+
+
 /*  foot module
 
     Produces a single foot for PCB mounting.
@@ -505,14 +521,35 @@ module foot() {
     color(Couleur1) {
         rotate_extrude($fn=100) {
             difference() {
-                translate([FootHole/2 + CutoutMargin, 0, 0]) {
-                    square([(FootDia - FootHole)/2 - CutoutMargin + FootFilet, FootHeight]);
+                union() {
+                    if (Screwless && top) { // Foot with TopPCBMargin height
+                        square([FootDia/2 + FootFilet, TopPCBMargin]);
+                    }
+                    else if (Screwless && !top) { // Foot for PCB peg
+                        square([FootDia/2 + FootFilet, FootHeight + PCBThick*2]);
+                    }
+                    else if (!Screwless && !top) { // Foot with screw hole
+                        translate([FootHole/2 + CutoutMargin, 0, 0]) {
+                            square([(FootDia - FootHole)/2 - CutoutMargin + FootFilet, FootHeight]);
+                        }
+                    }
                 }
                 translate([FootDia/2 + FootFilet, FootFilet, 0]) {
                     offset(r=FootFilet, $fn=Resolution) {
-                        square(FootHeight);
+                        square(Height);
                     }
                 }
+                if (Screwless && !top) { // Remove around peg
+                    translate([FootHole/2 - PartMargin, FootHeight]) {
+                        square([FootDia/2, PCBThick*3]);
+                    }
+                }
+                if (Screwless && top) { // Remove hole for peg
+                    translate([-FootHole/2, TopPCBMargin - PCBThick, 0]) {
+                        square([(FootHole + CutoutMargin), PCBThick*2]);
+                    }
+                }
+
             }
         }
     }
@@ -527,32 +564,27 @@ module foot() {
 
     No arguments are used, but parameters provide the PCB and foot dimensions.
 */
-module Feet() {
+module Feet(top=0) {
     translate([BackEdgeMargin + Thick + PanelThick + PanelGap, LeftEdgeMargin + Thick, Thick]) {
         /////////////// - PCB only visible in the preview mode - ///////////////
-        %translate([0, 0, FootHeight]) {
-            cube([PCBLength, PCBWidth, PCBThick]);
-            translate([PCBLength/2, PCBWidth/2, PCBThick]) {
-                color("Olive") {
-                    linear_extrude(height=FontThick) {
-                        text("PCB", font="Arial black", halign="center", valign="center");
-                    }
-                }
-            }
-        } // Fin PCB
+        if (!top) {
+            %PCB();
+        }
     
         ////////////////////////////// - 4 Feet - //////////////////////////////
-        translate([Foot1X, Foot1Y]) {
-            foot();
-        }
-        translate([Foot2X, Foot2Y]) {
-            foot();
+        if (Screwless || !top ) {
+            translate([Foot1X, Foot1Y]) {
+                foot(top=top);
             }
-        translate([Foot3X, Foot3Y]) {
-            foot();
+            translate([Foot2X, Foot2Y]) {
+                foot(top=top);
+                }
+            translate([Foot3X, Foot3Y]) {
+                foot(top=top);
+                }
+            translate([Foot4X, Foot4Y]) {
+                foot(top=top);
             }
-        translate([Foot4X, Foot4Y]) {
-            foot();
         }
     } // End main translate
 } // Fin du module Feet
@@ -570,6 +602,9 @@ module TopShell() {
                 union() {
                     Coque();
                     Tabs(top=1);
+                    if (Screwless && PCBFeet) {
+                       Feet(top=1);
+                    }
                 }
                 Holes(top=1);
             }
