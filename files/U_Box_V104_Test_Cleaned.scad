@@ -1,46 +1,62 @@
-/*//////////////////////////////////////////////////////////////////
+/* Box design originally by:
+////////////////////////////////////////////////////////////////////
               -    FB Aka Heartman/Hearty 2016     -
               -   http://heartygfx.blogspot.com    -
               -       OpenScad Parametric Box      -
               -         CC BY-NC 3.0 License       -
 ////////////////////////////////////////////////////////////////////
-12/02/2016 - Fixed minor bug
-28/02/2016 - Added holes ventilation option
-09/03/2016 - Added PCB feet support, fixed the shell artefact on export mode.
 
-*/////////////////////////// - Info - //////////////////////////////
+Improved by jbebel:
+http://github.com/jbebel/Ultimate-Box-Maker
 
-// All coordinates are starting as integrated circuit pins.
-// From the top view :
+To create a box, start by modifying the numerical parameters in the sections
+below. This can be accomplished using a release of OpenSCAD newer than 2015.03.
+As of the time of writing, this means that a development snapshot is required.
+The Thingiverse Customizer may also potentially work, but at the time of
+writing, it was inoperable.
 
-//   CoordD           <---       CoordC
-//                                 ^
-//                                 ^
-//                                 ^
-//   CoordA           --->       CoordB
+The simplest choice is to hand-edit the .scad file. Feature toggles are
+annotated with a comment. The other numerical parameters are measurements in
+mm. Everything is parametrized, so if you double all the non-feature parameters
+you will double the box size in every dimension. Certain parameters are derived
+from other parameters. If you wish to override them, you may, but sensible
+defaults have been chosen. Notably the design in this revision is particularly
+PCB-centric, in that you should start with your PCB size and adjust the margins
+around it to determine the box size. If you care more about the box size, you
+can set the Length, Width, and Height explicitly, but read the comments around
+them.
 
+Once your box is sized appropriately, you can use the Panel modules to design
+the holes and text for the front and back panels. Helper variables are provided
+to assist you in positioning these holes relative to the PCB, if your holes are
+for PCB-mounted components.
 
-////////////////////////////////////////////////////////////////////
+When you are ready to print, adjust the values in the "STL element to export"
+section, and export each part one at a time.
 
+Experimental options are provided for a screwless design, but these are
+untested. In particular, the box fixation tabs may need thicknesses adjusted
+in order to have the appropriate flexibility.
+*/
 
-////////// - Paramètres de la boite - Box parameters - /////////////
+//----------------------- Box parameters ---------------------------
 
 /* [Box options] */
-// - Epaisseur - Wall thickness
-Thick = 2; //[2:5]
+// - Wall thickness
+Thick = 2;
 // - Panel thickness
 PanelThick = 2;
 // - Font Thickness
 FontThick = 0.5;
 // - Filet Radius
-Filet = 2; //[0.1:12]
+Filet = 2;
 // - 0 for beveled, 1 for rounded
 Round = 1; // [0:No, 1:Yes]
 // - Printer margin around interior cutouts
 CutoutMargin = 0.3;
 // - Margin between mating parts
 PartMargin = 0.1;
-// Pieds PCB - PCB feet (x4)
+// - PCB feet? (x4)
 PCBFeet = 1; // [0:No, 1:Yes]
 // - Decorations?
 Decorations = 1; // [0:No, 1:Yes]
@@ -48,7 +64,7 @@ Decorations = 1; // [0:No, 1:Yes]
 Vent = 1; // [0:No, 1:Yes]
 // - Decoration-Holes width (in mm)
 Vent_width = 1.5;
-// - Tolérance - Tolerance (Panel/rails gap)
+// - Tolerance (Panel/rails gap)
 PanelGap = CutoutMargin*2 + PartMargin*2;
 
 
@@ -70,13 +86,13 @@ SnapTabs = 0; // [0:Screws, 1:Snaps]
 
 
 /* [PCB options] */
-// - Longueur PCB - PCB Length
+// - PCB Length
 PCBLength = 80;
-// - Largeur PCB - PCB Width
+// - PCB Width
 PCBWidth = 144;
-// - Epaisseur PCB Thickness
+// - PCB Thickness
 PCBThick = 1.6;
-// You likely need to maintain |Thick| margin on the left and right for tabs
+// You likely need to maintain |TabThick| margin on the left and right for tabs
 // and whatnot.
 // - Margin between front panel and PCB
 FrontEdgeMargin = 70;
@@ -87,15 +103,15 @@ LeftEdgeMargin = 11;
 // - Margin between right wall and PCB
 RightEdgeMargin = 11;
 // - Margin between top of PCB and box top.
-TopPCBMargin = 84;
+TopMargin = 84;
 
 
 /* [PCB_Feet] */
-// - Heuteur pied - Feet height above box interior
+// - Foot height above box interior
 FootHeight = 8;
-// - Diamètre pied - Foot diameter
+// - Foot diameter
 FootDia = 8;
-// - Diamètre trou - Hole diameter
+// - Hole diameter, or peg for screwless design
 FootHole = 2.2606; // tap size for #4 coarse-thread
 // - EXPERIMENTAL Screwless design
 Screwless = 0; // [0:Screws, 1:Screwless]
@@ -126,24 +142,25 @@ Foot4Y = PCBWidth - Foot4YFromEdge;
 
 
 /* [STL element to export] */
-//Coque haut - Top shell
+// - Top shell
 TShell = 0; // [0:No, 1:Yes]
-//Coque bas- Bottom shell
+// - Bottom shell
 BShell = 1; // [0:No, 1:Yes]
-//Panneau avant - Front panel
+// - Front panel
 FPanL = 1; // [0:No, 1:Yes]
-//Panneau arrière - Back panel
+// - Back panel
 BPanL = 1; // [0:No, 1:Yes]
 
 
 /* [Hidden] */
-// - Couleur coque - Shell color
+// - Shell color
 Couleur1 = "Orange";
-// - Couleur panneaux - Panels color
+// - Panel color
 Couleur2 = "OrangeRed";
-// - Text colors
+// - Text color
 TextColor = "White";
-// - making decorations thicker if it is a vent to make sure they go through shell
+// - making decorations thicker if it is a vent to make sure they go through
+// shell
 // Add a small number to Thick in case Filet is 0.
 Dec_Thick = Vent ? Thick*1.001 + Filet : Thick/2;
 // Separate vents with a square pillar by default.
@@ -151,14 +168,20 @@ Dec_Spacing = Thick + Vent_width;
 // X offset to center of first vent
 Dec_Offset = Thick*2 + PanelThick + PanelGap + Dec_Spacing - Vent_width/2;
 
-// Resolution based on Round parameter
+// Resolution based on Round parameter. Set this first number to something
+// smaller to speed up processing. It should always be a multiple of 4.
 Resolution = Round ? 100: 4;
 
-// Calculate box dimensions from PCB.
-TopMargin = PCBThick + TopPCBMargin;
+/* Calculate box dimensions from PCB. If you want a more box-centric design
+   where the outer diameter of the box matters more than the margins around
+   the PCB you can set these manually. The PCB will still be placedaccording
+   to the left and back margins, and if you want to use the screwless box
+   design, you will need to set the TopMargin to
+   (Height - Thick*2 - FootHeight - PCBThick)
+*/
 Length = PCBLength + FrontEdgeMargin + BackEdgeMargin + ((Thick + PanelThick + PanelGap)*2);
 Width = PCBWidth + LeftEdgeMargin + RightEdgeMargin + Thick*2;
-Height = FootHeight + TopMargin + Thick*2;
+Height = FootHeight + PCBThick + TopMargin + Thick*2;
 echo("Box: ", Length=Length, Width=Width, Height=Height);
 // X position inset of mounting holes and tabs
 MountInset = Thick*3 + PanelThick + PanelGap + ScrewHole*4;
@@ -170,12 +193,12 @@ PanelHeight = Height - Thick*2 - PanelGap;
 
 /*  Panel Manager
 
-    Use the below 4 modules to produce holes and text on the front and back panels.
-    The holes modules should contain instances of SquareHole or CylinderHole
-    defined later in this file. The text modules should contain instances of
-    LText or CText defined later in this file. It is recommended to use variables
-    that you define for your needs to create the size and positions of these
-    objects.
+    Use the below 4 modules to produce holes and text on the front and back
+    panels. The holes modules should contain instances of SquareHole or
+    CylinderHole defined later in this file. The text modules should contain
+    instances of LText or CText defined later in this file. It is
+    recommended to use variables that you define for your needs to create
+    the size and positions of these objects.
 */
 
 // Calculate board-relative positions with respect to the panel, for
@@ -246,14 +269,19 @@ module BPanelText() {
 }
 
 
+// ------- You probably don't need to modify anything below this line. --------
+
+
 /* Generic rounded box
 
-    Produces a box of the specified dimensions. Corners are rounded according to
-    Filet and Resolution parameters.
+    Produces a box of the specified dimensions. Corners are rounded
+    according to Filet and Resolution parameters.
     
     Arguments:
-    xshrink: the amount to reduce the length on one end compared to the full length
-    yzshrink: the amount to reduce the width or height on one edge compared to the full box  
+    xshrink: the amount to reduce the length on one end compared to the full
+        length
+    yzshrink: the amount to reduce the width or height on one edge compared
+        to the full box  
 */
 module RoundBox(xshrink=0, yzshrink=0) {
     Filet = (Filet > Thick*2) ? Filet - yzshrink : Filet;
@@ -273,8 +301,8 @@ module RoundBox(xshrink=0, yzshrink=0) {
 
 /*  MainBox: Main box module
 
-    This module produces the simple main box half. No feet, tabs, vents or fixation
-    is applied here.
+    This module produces the simple main box half. No feet, tabs, vents or
+    fixation is applied here.
 */
 module MainBox() {
     difference() {
@@ -343,11 +371,11 @@ module Decorations() {
 
 /*  Coque: Shell module
 
-    This module takes no arguments, but produces a box shell. This is half the box,
-    including slots for end panels, rounded corners according to Filet and Resolution,
-    and vents/decorations according to parameters.
+    This module takes no arguments, but produces a box shell. This is half
+    the box, including slots for end panels, rounded corners according to
+    Filet and Resolution, and vents/decorations according to parameters.
 */
-module Coque() { //Coque - Shell
+module Coque() {
     color(Couleur1) {
         difference() {
             MainBox();
@@ -404,7 +432,8 @@ module tab() {
 /*  Tabs: tabs module
 
     This module produces the wall fixation box tabs.
-    Tabs are produced according to the parameters for XXTab indicating top or bottom.
+    Tabs are produced according to the parameters for XXTab indicating top
+    or bottom.
 
     Arguments:
         top: 0 for bottom shell tabs. 1 for top shell tabs. defaults to bottom.
@@ -462,12 +491,13 @@ module hole() {
 
 /*  Holes: holes module
 
-    This module produces the holes necessary in the box fixation tabs and in the wall
-    of the box for the corresponding tabs to affix to.
-    Holes are produced according to the parameters for XXTab indicating top or bottom.
+    This module produces the holes necessary in the box fixation tabs and in
+    the wall of the box for the corresponding tabs to affix to. Holes are
+    produced according to the parameters for XXTab indicating top or bottom.
 
     Arguments:
-        top: 0 for bottom shell holes. 1 for top shell holes. defaults to bottom.
+        top: 0 for bottom shell holes. 1 for top shell holes. defaults to
+            bottom.
 */
 module Holes(top=0) {
     color(Couleur1) {
@@ -498,7 +528,13 @@ module Holes(top=0) {
     }
 }
 
+/*  PCB: PCB module
 
+    Produces the model of the PCB using parameters for its size and thickness.
+    The text PCB is placed on top of the board. This is called by the Feet()
+    module with the % modifier which makes this module translucent and only
+    viewed in preview mode.
+*/
 module PCB() {
     translate([0, 0, FootHeight]) {
         cube([PCBLength, PCBWidth, PCBThick]);
@@ -522,8 +558,8 @@ module foot() {
         rotate_extrude($fn=100) {
             difference() {
                 union() {
-                    if (Screwless && top) { // Foot with TopPCBMargin height
-                        square([FootDia/2 + FootFilet, TopPCBMargin]);
+                    if (Screwless && top) { // Foot with TopMargin height
+                        square([FootDia/2 + FootFilet, TopMargin]);
                     }
                     else if (Screwless && !top) { // Foot for PCB peg
                         square([FootDia/2 + FootFilet, FootHeight + PCBThick*2]);
@@ -545,7 +581,7 @@ module foot() {
                     }
                 }
                 if (Screwless && top) { // Remove hole for peg
-                    translate([-FootHole/2, TopPCBMargin - PCBThick, 0]) {
+                    translate([-FootHole/2, TopMargin - PCBThick, 0]) {
                         square([(FootHole + CutoutMargin), PCBThick*2]);
                     }
                 }
@@ -559,19 +595,17 @@ module foot() {
 /*  Feet module
 
     Combines four feet to form mounting platform for PCB.
-    A model of the PCB is included with the background modifier. It is translucent
-    but visible in the preview, but not in the final render.
+    A model of the PCB is included with the background modifier. It is
+    translucent but visible in the preview, but not in the final render.
 
     No arguments are used, but parameters provide the PCB and foot dimensions.
 */
 module Feet(top=0) {
     translate([BackEdgeMargin + Thick + PanelThick + PanelGap, LeftEdgeMargin + Thick, Thick]) {
-        /////////////// - PCB only visible in the preview mode - ///////////////
         if (!top) {
             %PCB();
         }
     
-        ////////////////////////////// - 4 Feet - //////////////////////////////
         if (Screwless || !top ) {
             translate([Foot1X, Foot1Y]) {
                 foot(top=top);
@@ -586,8 +620,8 @@ module Feet(top=0) {
                 foot(top=top);
             }
         }
-    } // End main translate
-} // Fin du module Feet
+    }
+}
 
 
 /*  TopShell: top shell module
@@ -634,8 +668,8 @@ module BottomShell() {
 
 /*  Panel module
 
-    Produces a single panel with potentially rounded corners. Takes no arguments
-    but uses the global parameters.
+    Produces a single panel with potentially rounded corners. Takes no
+    arguments but uses the global parameters.
 */
 module Panel() {
     Filet = (Filet > Thick*2) ? Filet - Thick - PanelGap/2 : Filet - PanelGap/2;
@@ -670,7 +704,8 @@ module CylinderHole(OnOff, Cx, Cy, Cdia) {
 
 /*  Square Hole module
 
-    Produces a rectangular prism with potentially rounded corner for use as a hole in a panel
+    Produces a rectangular prism with potentially rounded corner for use as
+    a hole in a panel
 
     Arguments:
     OnOff: Rendered only if 1
@@ -704,8 +739,10 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
     Font: Font to use for text
     Size: Approximate Height of text in mm.
     Content: The text
-    HAlign: Text horizontal alignment. Defaults to "center". "left" and "right" available.
-    VAlign: Text vertical alignment. Defaults to "baseline". "top", "center", and "bottom" available.
+    HAlign: Text horizontal alignment. Defaults to "center". "left" and
+        "right" available.
+    VAlign: Text vertical alignment. Defaults to "baseline". "top",
+        "center", and "bottom" available.
 */
 module LText(OnOff,Tx,Ty,Font,Size,Content, HAlign="center", VAlign="baseline") {
     if (OnOff) {
@@ -753,11 +790,11 @@ module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
 }
 
 
-////////////////////// <- New module Panel -> //////////////////////
 /*  FPanL module
 
-    Produces the front panel. No arguments are used, but this module must be
-    edited to produce holes and text for your box.
+    Produces the front panel. No arguments are used, but this module imports
+    FPanelHoles() and FPanelText() which must be edited to produce holes and
+    text for your box.
 */
 module FPanL() {
     translate([Length - (Thick + PanelGap/2 + PanelThick),
@@ -780,11 +817,11 @@ module FPanL() {
 }
 
 
-////////////////////// <- New module Panel -> //////////////////////
 /*  BPanL module
 
-    Produces the back panel. No arguments are used, but this module must be
-    edited to produce holes and text for your box.
+    Produces the back panel. No arguments are used, but this module imports
+    BPanelHoles() and BPanelText() which must be edited to produce holes and
+    text for your box.
 */
 module BPanL() {
     translate([Thick + PanelGap/2 + PanelThick,
@@ -807,24 +844,22 @@ module BPanL() {
 }
 
 
-/////////////////////////// <- Main part -> /////////////////////////
-
+// Top shell
 if (TShell) {
-    // Coque haut - Top Shell
     TopShell();
 }
 
+// Bottom shell
 if (BShell) {
-    // Coque bas - Bottom shell
     BottomShell();
 }
 
-// Panneau avant - Front panel
+// Front panel
 if (FPanL) {
     FPanL();
 }
 
-//Panneau arrière - Back panel
+// Back panel
 if (BPanL) {
     BPanL();
 }
