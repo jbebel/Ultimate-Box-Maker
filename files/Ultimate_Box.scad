@@ -39,6 +39,7 @@ untested. In particular, the box fixation tabs may need thicknesses adjusted
 in order to have the appropriate flexibility.
 */
 
+// preview[view:north east, tilt:top diagonal]
 //----------------------- Box parameters ---------------------------
 
 /* [Box options] */
