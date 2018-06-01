@@ -151,6 +151,8 @@ BShell = 1; // [0:No, 1:Yes]
 FPanL = 1; // [0:No, 1:Yes]
 // - Back panel
 BPanL = 1; // [0:No, 1:Yes]
+// - Panel holes and text
+PanelFeatures = 0; // [0:No, 1:Yes]
 
 
 /* [Hidden] */
@@ -806,12 +808,16 @@ module FPanL() {
                 linear_extrude(height=PanelThick) {
                     difference() {
                         Panel();
-                        FPanelHoles();
+                        if (PanelFeatures) {
+                            FPanelHoles();
+                        }
                     }
                 }
             }
             color(TextColor) {
-                FPanelText();
+                if (PanelFeatures) {
+                    FPanelText();
+                }
             }
         }
     }
@@ -833,12 +839,16 @@ module BPanL() {
                 linear_extrude(height=PanelThick) {
                     difference() {
                         Panel();
-                        BPanelHoles();
+                        if (PanelFeatures) {
+                            BPanelHoles();
+                        }
                     }
                 }
             }
             color(TextColor) {
-                BPanelText();
+                if (PanelFeatures) {
+                    BPanelText();
+                }
             }
         }
     }
