@@ -72,6 +72,8 @@ PanelGap = CutoutMargin*2 + PartMargin*2;
 /* [Box Fixation Tabs] */
 // - Side screw hole (or snap) diameter
 ScrewHole = 2.2606;
+// - Screw thread major diameter for outer shell
+BoxHole = 2.8448;
 // Thickness of fixation tabs
 TabThick = 2;
 // Back left tab
@@ -485,7 +487,7 @@ module hole() {
     else {
         translate([0, Thick, Height/2 - 2*ScrewHole]) {
             rotate([90, 0, 0]) {
-                cylinder(Thick*3, d=ScrewHole, $fn=100);
+                cylinder(Thick*3, d=BoxHole, $fn=100);
             }
         }
     }
