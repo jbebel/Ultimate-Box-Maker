@@ -118,26 +118,26 @@ FootHole = 2.2606; // tap size for #4 coarse-thread
 Screwless = 0; // [0:Screws, 1:Screwless]
 FootFilet = FootHeight/4;
 
-// Foot centers are specified as distance from PCB top-left corner.
+// Foot centers are specified as distance from PCB back-left corner.
 // X is along the "length" axis, and Y is along the "width" axis.
-// - Foot 1 distance from top PCB edge
+// - Foot 1 distance from back PCB edge
 Foot1X = 5;
-// - Foot 1 distance from left edge
+// - Foot 1 distance from left PCB edge
 Foot1Y = 5;
-// - Foot 2 distance from top PCB edge
+// - Foot 2 distance from back PCB edge
 Foot2X = 5;
-// - Foot 2 distance from left edge
+// - Foot 2 distance from right PCB edge
 Foot2YFromEdge = 5;
 Foot2Y = PCBWidth - Foot2YFromEdge;
-// - Foot 3 distance from top PCB edge
+// - Foot 3 distance from front PCB edge
 Foot3XFromEdge = 5;
 Foot3X = PCBLength - Foot3XFromEdge;
-// - Foot 3 distance from left edge
+// - Foot 3 distance from left PCB edge
 Foot3Y = 5;
-// - Foot 4 distance from top PCB edge
+// - Foot 4 distance from front PCB edge
 Foot4XFromEdge = 5;
 Foot4X = PCBLength - Foot4XFromEdge;
-// - Foot 4 distance from left edge
+// - Foot 4 distance from right PCB edge
 Foot4YFromEdge = 5;
 Foot4Y = PCBWidth - Foot4YFromEdge;
 
