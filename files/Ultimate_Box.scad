@@ -211,6 +211,11 @@ PanelHeight = Height - Thick*2 - PanelGap;
 TopOfBoardWRTPanel = FootHeight + PCBThick - (PanelGap/2);
 LeftEdgeOfBoardWRTFPanel = LeftEdgeMargin - (PanelGap/2);
 LeftEdgeOfBoardWRTBPanel = RightEdgeMargin - (PanelGap/2);
+// Visible panel edges
+PanelBottomEdge = Thick - (PanelGap/2);
+PanelTopEdge = PanelHeight - Thick + (PanelGap/2);
+PanelLeftEdge = Thick - (PanelGap/2);
+PanelRightEdge = PanelWidth - Thick + (PanelGap/2);
 
 
 // Holes for front panel
