@@ -428,8 +428,8 @@ module tab() {
             if (SnapTabs) {
                 translate([0, ScrewHole*2, PartMargin]) {
                     difference() {
-                        sphere(d=ScrewHole, $fn=100);
-                        translate([0, 0, ScrewHole*.75]) {
+                        sphere(d=(ScrewHole - PartMargin*2), $fn=100);
+                        translate([0, 0, ScrewHole*.5 + TabThick/2]) {
                             cube(ScrewHole, center=true);
                         }
                     }
