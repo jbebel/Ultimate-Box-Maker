@@ -147,7 +147,7 @@ Foot4Y = PCBWidth - Foot4YFromEdge;
 
 /* [STL element to export] */
 // - Top shell
-TShell = 0; // [0:No, 1:Yes]
+TShell = 1; // [0:No, 1:Yes]
 // - Bottom shell
 BShell = 1; // [0:No, 1:Yes]
 // - Front panel
@@ -652,6 +652,9 @@ module TopShell() {
                     }
                 }
                 Holes(top=1);
+                translate([60, 40, -Thick]) {
+                    cube([30, 90, Thick*3]);
+                }
             }
         }
     }
