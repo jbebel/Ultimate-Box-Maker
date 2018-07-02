@@ -655,6 +655,9 @@ module TopShell() {
                 translate([60, 40, -Thick]) {
                     cube([30, 90, Thick*3]);
                 }
+                translate([120, 85, -Thick]) {
+                    cylinder(Thick*3, d=16);
+                }
             }
         }
     }
