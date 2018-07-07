@@ -144,6 +144,14 @@ Foot4X = PCBLength - Foot4XFromEdge;
 Foot4YFromEdge = 5;
 Foot4Y = PCBWidth - Foot4YFromEdge;
 
+Foot5X = 100;
+Foot5Y = 40;
+Foot6X = 120;
+Foot6Y = 40;
+Foot7X = 100;
+Foot7Y = 80;
+Foot8X = 120;
+Foot8Y = 80;
 
 /* [STL element to export] */
 // - Top shell
@@ -628,6 +636,18 @@ module Feet(top=0) {
                 foot(top=top);
                 }
             translate([Foot4X, Foot4Y]) {
+                foot(top=top);
+            }
+            translate([Foot5X, Foot5Y]) {
+                foot(top=top);
+            }
+            translate([Foot6X, Foot6Y]) {
+                foot(top=top);
+                }
+            translate([Foot7X, Foot7Y]) {
+                foot(top=top);
+                }
+            translate([Foot8X, Foot8Y]) {
                 foot(top=top);
             }
         }
