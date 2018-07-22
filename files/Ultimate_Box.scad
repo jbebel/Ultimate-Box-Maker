@@ -589,12 +589,24 @@ module foot() {
                 }
                 if (Screwless && !top) { // Remove around peg
                     translate([FootHole/2 - PartMargin, FootHeight]) {
-                        square([FootDia/2, PCBThick*3]);
+                        polygon([[0, 0],
+                                 [FootDia/2, 0],
+                                 [FootDia/2, PCBThick*3],
+                                 [-FootHole/3, PCBThick*3],
+                                 [0, PCBThick]
+                                ]
+                        );
                     }
                 }
                 if (Screwless && top) { // Remove hole for peg
                     translate([-FootHole/2, TopMargin - PCBThick, 0]) {
-                        square([(FootHole + CutoutMargin), PCBThick*2]);
+                        polygon([[0, 0],
+                                 [(FootHole*5/6 + CutoutMargin), 0],
+                                 [(FootHole + CutoutMargin), PCBThick],
+                                 [(FootHole + CutoutMargin), PCBThick*2],
+                                 [0, PCBThick*2],
+                                ]
+                        );
                     }
                 }
 
