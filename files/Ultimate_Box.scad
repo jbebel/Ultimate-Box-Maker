@@ -741,11 +741,12 @@ module CylinderHole(OnOff, Cx, Cy, Cdia) {
 */
 module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
     if (OnOff) {
+        Offset = Filet + CutoutMargin;
         echo("SquareHole:", Sx=Sx - CutoutMargin, Sy=Sy - CutoutMargin,
-             Sl=Sl + CutoutMargin*2, Sw=Sw + CutoutMargin*2, Filet=Filet);
-        translate([Sx + Filet - CutoutMargin, Sy + Filet - CutoutMargin, 0]) {
-            offset(r=Filet, $fn=Resolution) {
-                square([Sl + CutoutMargin*2 - Filet*2, Sw + CutoutMargin*2 - Filet*2]);
+             Sl=Sl + CutoutMargin*2, Sw=Sw + CutoutMargin*2, Filet=Offset);
+        translate([Sx + Filet, Sy + Filet, 0]) {
+            offset(r=Offset, $fn=Resolution) {
+                square([Sl - Filet*2, Sw - Filet*2]);
             }
         }
     }
