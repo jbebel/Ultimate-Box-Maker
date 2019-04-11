@@ -565,7 +565,7 @@ module PCB() {
 
     Produces a single foot for PCB mounting.
 */
-module foot() {
+module foot(top=0) {
     color(Couleur1) {
         rotate_extrude($fn=100) {
             difference() {
@@ -682,7 +682,7 @@ module BottomShell() {
             Coque();
             Tabs();
             if (PCBFeet) {
-               Feet();
+               Feet(top=0);
             }
         }
         Holes();
