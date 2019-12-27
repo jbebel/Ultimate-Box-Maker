@@ -288,12 +288,12 @@ module BPanelText() {
 
     Produces a box of the specified dimensions. Corners are rounded
     according to Filet and Resolution parameters.
-    
+
     Arguments:
     xshrink: the amount to reduce the length on one end compared to the full
         length
     yzshrink: the amount to reduce the width or height on one edge compared
-        to the full box  
+        to the full box
 */
 module RoundBox(xshrink=0, yzshrink=0) {
     Filet = (Filet > Thick*2) ? Filet - yzshrink : Filet;
@@ -430,7 +430,7 @@ module tab() {
                 translate([0, ScrewHole*2, PartMargin]) {
                     difference() {
                         sphere(d=(ScrewHole - PartMargin*2), $fn=100);
-                        translate([0, 0, ScrewHole*.5 + TabThick/2]) {
+                        translate([0, 0, ScrewHole/2 + TabThick/2]) {
                             cube(ScrewHole, center=true);
                         }
                     }
@@ -629,7 +629,7 @@ module Feet(top=0) {
         if (!top) {
             %PCB();
         }
-    
+
         if (Screwless || !top ) {
             translate([Foot1X, Foot1Y]) {
                 foot(top=top);
