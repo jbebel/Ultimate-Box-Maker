@@ -156,7 +156,7 @@ FPanL = 1; // [0:No, 1:Yes]
 // - Back panel
 BPanL = 1; // [0:No, 1:Yes]
 // - Panel holes and text
-PanelFeatures = 0; // [0:No, 1:Yes]
+PanelFeatures = 1; // [0:No, 1:Yes]
 
 
 /* [Hidden] */
@@ -772,8 +772,8 @@ module SquareHole(OnOff, Sx, Sy, Sl, Sw, Filet) {
 module LText(OnOff,Tx,Ty,Font,Size,Content, HAlign="center", VAlign="baseline") {
     if (OnOff) {
         echo("LText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size, Content=Content, HAlign=HAlign, VAlign=VAlign);
-        translate([Tx, Ty, PanelThick]) {
-            linear_extrude(height=FontThick) {
+        translate([Tx, Ty, PanelThick-FontThick]) {
+            linear_extrude(height=FontThick*2) {
                 text(Content, size=Size, font=Font, halign=HAlign, valign=VAlign);
             }
         }
@@ -800,11 +800,11 @@ module CText(OnOff, Tx, Ty, Font, Size, TxtRadius, Angl, Turn, Content) {
         echo("CText:", Tx=Tx, Ty=Ty, Font=Font, Size=Size,
              TxtRadius=TxtRadius, Turn=Turn, Content=Content);
         Angle = -Angl / (len(Content) - 1);
-        translate([Tx, Ty, PanelThick]) {
+        translate([Tx, Ty, PanelThick-FontThick]) {
             for (i= [0 : len(Content) - 1] ) {
                 rotate([0, 0, i*Angle + 90 + Turn]) {
                     translate([0, TxtRadius, 0]) {
-                        linear_extrude(height=FontThick) {
+                        linear_extrude(height=FontThick*2) {
                             text(Content[i], size=Size, font=Font, halign="center");
                         }
                     }
@@ -827,18 +827,18 @@ module FPanL() {
                Thick + PanelVerticalGap]) {
         rotate([90, 0, 90]) {
             color(Couleur2) {
-                linear_extrude(height=PanelThick) {
-                    difference() {
-                        Panel();
-                        if (PanelFeatures) {
-                            FPanelHoles();
+                difference() {
+                    linear_extrude(height=PanelThick) {
+                        difference() {
+                            Panel();
+                            if (PanelFeatures) {
+                                FPanelHoles();
+                            }
                         }
                     }
-                }
-            }
-            color(TextColor) {
-                if (PanelFeatures) {
-                    FPanelText();
+                    if (PanelFeatures) {
+                        FPanelText();
+                    }
                 }
             }
         }
@@ -858,18 +858,18 @@ module BPanL() {
                Thick + PanelVerticalGap]) {
         rotate([90, 0, 270]) {
             color(Couleur2) {
-                linear_extrude(height=PanelThick) {
-                    difference() {
-                        Panel();
-                        if (PanelFeatures) {
-                            BPanelHoles();
+                difference() {
+                    linear_extrude(height=PanelThick) {
+                        difference() {
+                            Panel();
+                            if (PanelFeatures) {
+                                BPanelHoles();
+                            }
                         }
                     }
-                }
-            }
-            color(TextColor) {
-                if (PanelFeatures) {
-                    BPanelText();
+                    if (PanelFeatures) {
+                        BPanelText();
+                    }
                 }
             }
         }
